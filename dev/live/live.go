@@ -18,6 +18,7 @@ var (
 	flagAddr        = flag.String("addr", ":8080", "listen address")
 	flagSegmentsDir = flag.String("segments", "testlive10s", "directory with *.m4s segment files")
 	flagMPDDelay    = flag.Int("mpd-delay", 0, "/mpd/ response delay (in s)")
+	flagStreamStart = flag.Int("stream-start", 200, "stream start (in hours ago)")
 )
 
 type infoResponse struct {
@@ -48,8 +49,6 @@ const (
 	videoTitle      = "Test live stream video created with FFMPEG"
 )
 
-var streamStartTime = time.Date(2026, time.February, 20, 10, 20, 30, 0, time.UTC)
-
 const mpdTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 <MPD xmlns="urn:mpeg:DASH:schema:MPD:2011"
      profiles="urn:mpeg:dash:profile:isoff-live:2011"
@@ -79,12 +78,13 @@ const mpdTemplate = `<?xml version="1.0" encoding="UTF-8"?>
 `
 
 func infoHandler(w http.ResponseWriter, r *http.Request) {
+	startHoursAgo := time.Duration(*flagStreamStart) * time.Hour
 	info := infoResponse{
 		ID:              "abcdefgh123",
 		Title:           videoTitle,
 		ChannelID:       "test-channel-id",
 		ChannelTitle:    "Live Stream Watching Club",
-		ActualStartTime: streamStartTime,
+		ActualStartTime: time.Now().Add(-startHoursAgo).UTC(),
 	}
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(info); err != nil {

@@ -78,35 +78,6 @@ const mpdTemplate = `<?xml version="1.0" encoding="UTF-8"?>
  </MPD>
 `
 
-// const mpdTemplate = `<?xml version="1.0" encoding="UTF-8"?>
-// <MPD xmlns="urn:mpeg:DASH:schema:MPD:2011"
-//      profiles="urn:mpeg:dash:profile:isoff-live:2011"
-//      type="dynamic"
-//      availabilityStartTime="{{availabilityStartTime}}">
-//    <ProgramInformation>
-//    </ProgramInformation>
-//    <BaseURL>http://localhost:8080</BaseURL>
-//    <Period id="0">
-//      <AdaptationSet id="0" mimeType="video/mp4">
-//        <Representation id="0"
-//                        codecs="avc1.64001f"
-//                        width="1280"
-//                        height="720"
-//                        frameRate="30">
-//          <SegmentTemplate initialization="segments/init.mp4"
-//                           media="segments/$Number$.m4s"
-//                           startNumber="{{startNumber}}"
-//                           timescale="{{timescale}}">
-//             <SegmentTimeline>
-//               <S d="{{segmentDuration}}" r="-1"/>
-//           </SegmentTimeline>
-//          </SegmentTemplate>
-//        </Representation>
-//      </AdaptationSet>
-//    </Period>
-//  </MPD>
-// `
-
 func infoHandler(w http.ResponseWriter, r *http.Request) {
 	info := infoResponse{
 		ID:              "abcdefgh123",
@@ -146,7 +117,6 @@ func mpdHandler(w http.ResponseWriter, r *http.Request) {
 	mpd := strings.ReplaceAll(
 		mpdTemplate,
 		"{{currentTime}}",
-		//segmentStartTime(t.Add(10 * time.Second)).Format(time.RFC3339),
 		time.Now().UTC().Format(time.RFC3339),
 	)
 	mpd = strings.ReplaceAll(
@@ -158,8 +128,6 @@ func mpdHandler(w http.ResponseWriter, r *http.Request) {
 		mpd,
 		"{{availabilityStartTime}}",
 		time.Now().UTC().Add(-segmentDuration * time.Second).Format(time.RFC3339),
-		//time.Now().UTC().Format(time.RFC3339),
-		//segmentStartTime(t).UTC().Format(time.RFC3339),
 	)
 	mpd = strings.ReplaceAll(mpd, "{{timescale}}", strconv.Itoa(timescale))
 	mpd = strings.ReplaceAll(
@@ -197,9 +165,6 @@ func mpdHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		slog.Error("encoding mpd response", "err", err)
 	}
-
-	// w.Header().Set("Content-Type", "application/dash+xml")
-	// w.Write([]byte(mpd))
 }
 
 func initSegmentHandler(w http.ResponseWriter, r *http.Request) {

@@ -41,6 +41,7 @@ export function createExplorer(
   let timezoneOffset = $state<number>(localOffsetMinutes());
   let centeredOnMidnight = $state<boolean>(false);
   let showTimelineViewRange = $state<boolean>(false);
+  let availableRange = $state<{ start: number; end: number } | null>(null);
 
   let zoomLevel = $state<ZoomLevel>(ZOOM_LEVELS["1d"]);
   let selectedTime = $state<Timestamp | null>(null);
@@ -93,6 +94,10 @@ export function createExplorer(
 
   function setPauseAfterRewind(value: boolean): void {
     pauseAfterRewind = value;
+  }
+
+  function setAvailableRange(range: { start: number; end: number }): void {
+    availableRange = range;
   }
 
   // View actions
@@ -204,9 +209,13 @@ export function createExplorer(
     get showTimelineViewRange() {
       return showTimelineViewRange;
     },
+    get availableRange() {
+      return availableRange;
+    },
 
     setIsRewinding,
     setPauseAfterRewind,
+    setAvailableRange,
 
     setZoom,
     setViewRange,

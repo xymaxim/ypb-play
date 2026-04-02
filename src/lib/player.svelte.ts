@@ -6,6 +6,7 @@ export interface StreamInfo {
   title: string;
   channelTitle: string;
   channelId: string;
+  actualStartTime: Date;
 }
 
 const PLAYER_CONFIG = {
@@ -117,6 +118,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
       title: json.title,
       channelTitle: json.channelTitle,
       channelId: json.channelId,
+      actualStartTime: new Date(json.actualStartTime),
     };
 
     shaka.polyfill.installAll();

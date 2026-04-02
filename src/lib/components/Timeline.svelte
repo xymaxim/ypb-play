@@ -33,6 +33,8 @@
   let isHovering = $state(false);
   let shiftHeld = $state(false);
 
+  // Constants
+  const notAvailableMessage = "Not available for rewind";
   // Derived
   const showScrubBar = $derived(
     shiftHeld && isHovering && !explorer.showTimelineViewRange,
@@ -96,6 +98,26 @@
     return formatHoverTime(ts, spanMs, explorer.timezoneOffset);
   });
 
+  const unavailableLeftPx = $derived.by<number | null>(() => {
+    const ar = explorer.availableRange;
+    if (!ar || !range) return null;
+    if (ar.start <= range.start) return null;
+    return timeToPixel(Math.min(ar.start, range.end), range, bar.width);
+  });
+
+  const unavailableRightPx = $derived.by<number | null>(() => {
+    const ar = explorer.availableRange;
+    if (!ar || !range) return null;
+    if (ar.end >= range.end) return null;
+    return timeToPixel(Math.max(ar.end, range.start), range, bar.width);
+  });
+
+  function isAvailable(ts: number): boolean {
+    const ar = explorer.availableRange;
+    if (!ar) return true;
+    return ts >= ar.start && ts <= ar.end;
+  }
+
   // Effects
   $effect(() => {
     if (!playheadEl || range === null) return;
@@ -115,8 +137,9 @@
 
   // Event handlers
   function onMouseMove(e: MouseEvent) {
-    if (!timelineEl) return;
-    hoverPx = e.clientX - timelineEl.getBoundingClientRect().left;
+    const px = e.clientX - timelineEl.getBoundingClientRect().left;
+    const ts = range ? pixelToTime(px, range, bar.width) : null;
+    hoverPx = ts && isAvailable(ts) ? px : null;
   }
 
   function onMouseEnter() {
@@ -151,6 +174,7 @@
       ),
       spanMs,
     );
+    if (!isAvailable(ts)) return;
     explorer.setSelectedTime(ts);
     if (!e.ctrlKey)
       onRewind(new Date(ts).toISOString(), explorer.pauseAfterRewind);
@@ -171,6 +195,9 @@
     {#each ticks.filter((t) => t.major) as tick}
       <span
         class="absolute text-sm whitespace-nowrap text-foreground"
+        class:text-gray-300={!isAvailable(
+          pixelToTime(tick.px, range!, bar.width),
+        )}
         style="left: {tick.px}px; transform: translateX(-50%);"
         >{tick.label}</span
       >
@@ -192,6 +219,22 @@
         class="pointer-events-none absolute top-0 bottom-0"
         style="left: {seekableLeft}px; width: {seekableRight -
           seekableLeft}px; background: rgba(0,0,0,0.08);"
+      ></div>
+    {/if}
+
+    {#if unavailableLeftPx !== null}
+      <div
+        title={notAvailableMessage}
+        class="unavailable-back absolute top-0 bottom-0 left-0"
+        style="width: {unavailableLeftPx}px;"
+      ></div>
+    {/if}
+
+    {#if unavailableRightPx !== null}
+      <div
+        title={notAvailableMessage}
+        class="unavailable-back absolute top-0 right-0 bottom-0"
+        style="left: {unavailableRightPx}px;"
       ></div>
     {/if}
 
@@ -262,3 +305,11 @@
     </div>
   {/if}
 </div>
+
+<style>
+  @reference "tailwindcss";
+  .unavailable-back {
+    @apply cursor-not-allowed rounded-md backdrop-blur-md backdrop-grayscale;
+    background: --alpha(var(--background) / 70%);
+  }
+</style>

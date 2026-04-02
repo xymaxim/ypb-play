@@ -14,6 +14,7 @@
 
   // State
   let videoEl = $state<HTMLVideoElement | null>(null);
+  let now = $state(Date.now());
 
   // Effects: player-explorer wiring
   $effect(() => {
@@ -22,6 +23,16 @@
 
   $effect(() => {
     explorer.setIsRewinding(player.isRewinding);
+  });
+
+  $effect(() => {
+    const info = player.streamInfo;
+    if (!info) return;
+    const depth = 7 * 24 * 60 * 60 * 1000;
+    explorer.setAvailableRange({
+      start: Math.max(info.actualStartTime.getTime(), now - depth),
+      end: now,
+    });
   });
 
   // Keyboard shortcuts
@@ -80,10 +91,16 @@
     window.addEventListener("keydown", handleKeyDown);
     videoEl?.addEventListener("interval-end", onIntervalEnd);
     player.init().catch(console.error);
+
+    const nowInterval = setInterval(() => {
+      now = Date.now();
+    }, 1000);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       videoEl?.removeEventListener("interval-end", onIntervalEnd);
       player.destroy();
+      clearInterval(nowInterval);
     };
   });
 </script>

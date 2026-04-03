@@ -1,5 +1,10 @@
-dev/live/live
-dev/live/dash/
+# Wails
+build/bin
+node_modules
+frontend/dist
+
+frontend/dev/live/live
+frontend/dev/live/dash/
 
 # Logs
 logs

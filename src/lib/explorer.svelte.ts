@@ -12,6 +12,8 @@ import { buildAvailableDays, MS_PER_DAY, MS_PER_HOUR } from "./utils/dateUtils";
 import { clampViewRange } from "./utils/timelineUtils";
 import { localOffsetMinutes } from "./utils/dateTimeUtils";
 
+export const DEPTH_HOURS = 167;
+
 // Context
 const EXPLORER_KEY = Symbol("explorer");
 
@@ -28,11 +30,15 @@ export function getExplorerContext(): Explorer {
 
 export function createExplorer(
   options: {
-    depthDays?: number;
-    now?: Date;
+    depthHours?: number;
   } = {},
 ): Explorer {
-  const { depthDays = 7, now = new Date() } = options;
+  const { depthHours = DEPTH_HOURS } = options;
+
+  let now = $state(Date.now());
+  const nowInterval = setInterval(() => {
+    now = Date.now();
+  }, 1000);
 
   // State
   let isRewinding = $state(false);
@@ -41,7 +47,7 @@ export function createExplorer(
   let timezoneOffset = $state<number>(localOffsetMinutes());
   let centeredOnMidnight = $state<boolean>(false);
   let showTimelineViewRange = $state<boolean>(false);
-  let availableRange = $state<{ start: number; end: number } | null>(null);
+  let streamStartTime = $state<number | null>(null);
 
   let zoomLevel = $state<ZoomLevel>(ZOOM_LEVELS["1d"]);
   let selectedTime = $state<Timestamp | null>(null);
@@ -55,12 +61,27 @@ export function createExplorer(
   });
 
   // Derived
+  const depthMs = depthHours * MS_PER_HOUR;
+
+  const availableRange = $derived.by<{ start: number; end: number } | null>(
+    () => {
+      if (streamStartTime === null) return null;
+      const depthStart = now - depthMs;
+      return {
+        start: Math.max(streamStartTime, depthStart),
+        end: now,
+      };
+    },
+  );
+
   const days = $derived.by(() => {
-    const depth = availableRange
-      ? Math.ceil((now - availableRange.start) / MS_PER_DAY) + 1
-      : 7;
-    return buildAvailableDays(now, depth, timezoneOffset);
+    if (availableRange === null) return [];
+    const depthDays = Math.ceil((now - availableRange.start) / MS_PER_DAY) + 1;
+    return buildAvailableDays(new Date(now), depthDays, timezoneOffset).filter(
+      (d) => d.dayEnd > availableRange!.start,
+    );
   });
+
   let viewRange = $state<ViewRange | null>(
     days[0] ? { start: days[0].dayStart, end: days[0].dayEnd } : null,
   );
@@ -101,8 +122,8 @@ export function createExplorer(
     pauseAfterRewind = value;
   }
 
-  function setAvailableRange(range: { start: number; end: number }): void {
-    availableRange = range;
+  function setStreamStartTime(ts: number): void {
+    streamStartTime = ts;
   }
 
   // View actions
@@ -177,6 +198,10 @@ export function createExplorer(
     showTimelineViewRange = value;
   }
 
+  function destroy(): void {
+    clearInterval(nowInterval);
+  }
+
   return {
     get isRewinding() {
       return isRewinding;
@@ -220,22 +245,19 @@ export function createExplorer(
 
     setIsRewinding,
     setPauseAfterRewind,
-    setAvailableRange,
-
+    setStreamStartTime,
     setZoom,
     setViewRange,
     setTimezoneOffset,
     setCenteredOnMidnight,
-
     setSelectedTime,
     clearSelectedTime,
     setPlayheadTime,
-
     clearAllMarks,
     assignMark,
     getInterval,
-
     setShowTimelineViewRange,
+    destroy,
   };
 }
 

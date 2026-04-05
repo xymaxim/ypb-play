@@ -8,5 +8,5 @@
       }
     }
   ],
-  "tailwindStylesheet": "./frontend/src/app.css"
+  "tailwindStylesheet": "./src/app.css"
 }

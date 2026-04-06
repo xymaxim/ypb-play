@@ -13,13 +13,18 @@
   let loading = $state(false);
   let error = $state(false);
 
-  function extractVideoId(input: string): string | null {
-    const trimmed = input.trim();
+  const displayValue = $derived(
+    focused
+      ? (inputValue ? (inputValue.startsWith('https://') ? inputValue : `https://${inputValue}`) : '')
+      : inputValue.replace(/^https?:\/\//, '')
+  );
+
+ function extractVideoId(input: string): string | null {
+     const trimmed = input.trim();
     const patterns = [
       /(?:youtube\.com\/watch\?[^#]*v=)([a-zA-Z0-9_-]{11})/,
       /(?:youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
       /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-      /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,
       /^([a-zA-Z0-9_-]{11})$/,
     ];
     for (const pattern of patterns) {
@@ -28,6 +33,10 @@
     }
     return null;
   }
+
+    function getNormalizedUrl(videoId: string): string {
+        return `youtube.com/live/${videoId}`
+    }
 
   async function onKeyDown(e: KeyboardEvent) {
     if (e.key !== "Enter") return;
@@ -38,6 +47,7 @@
     }
     error = false;
     loading = true;
+    inputValue = getNormalizedUrl(videoId);
     try {
       onStreamStart(videoId);
     } catch (err) {
@@ -52,18 +62,23 @@
 <div class="mb-1 flex items-center justify-center gap-2">
   <Input
     bind:ref={inputEl}
-    bind:value={inputValue}
+    value={displayValue}
     type="text"
     placeholder="Paste YouTube live stream link"
     disabled={loading}
-    class="h-8 rounded-lg border px-3 text-sm font-medium transition-[width] duration-200 outline-none hover:bg-neutral-300/70 
+    class="h-8 rounded-lg border px-3 text-sm font-medium transition-[width] duration-200 outline-none hover:bg-neutral-300/70
          {focused ? 'w-full bg-white! shadow-md' : 'w-80 bg-neutral-200'}"
     aria-invalid={error}
     onfocus={() => {
       focused = true;
-      inputEl?.select();
+      setTimeout(() => inputEl?.select(), 200);
     }}
-    onblur={() => (focused = false)}
+    onblur={() => {
+      focused = false;
+    }}
     onkeydown={onKeyDown}
+    oninput={(e: Event) => {
+      inputValue = (e.target as HTMLInputElement).value;
+    }}
   />
 </div>

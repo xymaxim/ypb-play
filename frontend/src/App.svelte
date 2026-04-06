@@ -127,7 +127,7 @@
 </script>
 
 <main class="mx-auto flex w-full max-w-4xl min-w-2xl flex-col gap-2 px-6 py-3">
-  <TopBar {onStreamStart} />
+  <TopBar {onStreamStart} streamTitle={player.streamInfo?.title ?? null} />
   <div
     class="flex min-h-[362px] w-full justify-center overflow-hidden rounded-lg bg-black"
   >

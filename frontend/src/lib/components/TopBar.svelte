@@ -10,9 +10,10 @@
 
   interface Props {
     onStreamStart: () => void;
+    streamTitle: string | null;
   }
 
-  let { onStreamStart }: Props = $props();
+  let { onStreamStart, streamTitle }: Props = $props();
 
   let inputEl = $state<HTMLInputElement | null>(null);
   let inputValue = $state("");
@@ -100,13 +101,15 @@
       {/if}
     </InputGroup>
     {#if focused && currentVideoId}
-      <div class="absolute left-0 top-full z-50 mt-1 flex w-full items-center gap-2 rounded-lg border bg-white p-2 shadow-md">
-        <span class="flex-1 truncate text-sm text-neutral-600">
+      <div class="absolute left-0 top-full z-50 mt-1 flex w-full flex-col rounded-lg border bg-white p-2 shadow-md">
+        {#if streamTitle}
+          <span class="truncate text-sm font-medium text-neutral-800" title={streamTitle}>
+            {streamTitle}
+          </span>
+        {/if}
+        <span class="truncate text-xs text-neutral-500">
           {getCanonicalUrl(currentVideoId)}
         </span>
-        <Button variant="ghost" size="icon-sm" onclick={copyCurrentUrl}>
-          <CopyIcon />
-        </Button>
       </div>
     {/if}
   </div>

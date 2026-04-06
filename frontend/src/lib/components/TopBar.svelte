@@ -6,7 +6,7 @@
   } from "$lib/components/ui/input-group/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-  import CopyIcon from "phosphor-svelte/lib/CopyIcon";
+  import CopySimpleIcon from "phosphor-svelte/lib/CopySimpleIcon";
   import XIcon from "phosphor-svelte/lib/XIcon";
 
   interface Props {
@@ -116,7 +116,7 @@
           </span>
         </div>
         <Button variant="ghost" size="icon-sm" onclick={copyCurrentUrl}>
-          <CopyIcon />
+          <CopySimpleIcon />
         </Button>
       </div>
     {/if}

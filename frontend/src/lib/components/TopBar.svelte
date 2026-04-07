@@ -59,6 +59,8 @@
       return;
     }
     error = false;
+    inputEl?.blur();
+    focused = false;
     loading = true;
     currentVideoId = videoId;
     inputValue = getCanonicalUrl(videoId);
@@ -98,6 +100,7 @@
         }}
         onblur={() => {
           focused = false;
+          error = false;
         }}
         onkeydown={onKeyDown}
         oninput={(e: Event) => {

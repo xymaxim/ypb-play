@@ -337,11 +337,11 @@
   @reference "tailwindcss";
 
   .play-toolbar {
-    @apply inline-flex h-10! min-w-120 flex-row items-center gap-4 rounded-xl bg-[var(--ypb-play-light)] px-3 py-1;
+    @apply inline-flex h-10! min-w-120 flex-row items-center gap-4 rounded-xl bg-[var(--ypb-play-light)]/50 px-3 py-1;
   }
 
   .play-toolbar :global(button[data-slot="button"]) {
-    @apply h-8 w-[35px] rounded-full bg-[var(--ypb-play-light)];
+    @apply h-8 w-[35px] rounded-full bg-[var(--ypb-play-light)] hover:bg-[var(--ypb-play-light)]/60;
   }
 
   .play-toolbar__group {

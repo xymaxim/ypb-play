@@ -46,7 +46,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #f4f4f5; /* #f4f2ee; */ /* f3efe3 #f2f0e3 oklch(1 0 0); */
+  --background: #f4f4f5;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -110,8 +110,8 @@
   --ypb-interval-500: oklch(0.51 0.24 299);
   --ypb-interval-600: oklch(0.44 0.21 299);
 
-  --ypb-play: var(--ypb-play-900);
-  --ypb-play-light: var(--ypb-play-400);
+  --ypb-play: var(--ypb-play-800);
+  --ypb-play-light: color-mix(in oklch, var(--ypb-play), white 30%);
 
   --ypb-selected: var(--ypb-selected-950);
   --ypb-selected-light: var(--ypb-selected-500);

@@ -126,13 +126,13 @@
         title="Jump to playhead"
         onclick={jumpToPlayhead}
       >
-        <span class="text-timestamp text-sm">
+        <span class="text-timestamp text-lg font-bold! text-foreground!">
           {formatDateTime(
             playingTime.getTime(),
             explorer.timezoneOffset,
             false,
           )}
-          <span class="text-xs"
+          <span class="text-xs text-muted-foreground"
             >{formatOffset(explorer.timezoneOffset)}</span
           >
         </span>
@@ -337,7 +337,7 @@
   @reference "tailwindcss";
 
   .play-toolbar {
-    @apply inline-flex h-10! min-w-120 flex-row items-center gap-4 rounded-xl bg-[var(--ypb-play-light)]/50 px-3 py-1;
+    @apply inline-flex h-10! min-w-120 flex-row items-center gap-4 rounded-xl px-3 py-1;
   }
 
   .play-toolbar :global(button[data-slot="button"]) {

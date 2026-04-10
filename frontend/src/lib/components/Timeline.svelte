@@ -212,7 +212,7 @@
 
   <div
     bind:this={timelineEl}
-    class="group cursor-timeline relative h-[60px] w-full rounded-md transition-[filter]"
+    class="group cursor-rewind relative h-[60px] w-full rounded-md transition-[filter]"
     style="background: {stripeGradient} {stripeOffsetPx}px 0 / {stripeWidthPx}px 100%;"
     class:blur-sm={showScrubBar}
     class:pointer-events-none={showScrubBar}
@@ -332,7 +332,7 @@
 
 <style>
   @reference "tailwindcss";
-  .cursor-timeline {
+  .cursor-rewind {
     cursor:
       url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24'><circle cx='12' cy='12' r='8' fill='oklch(0.89 0.1 156)' stroke='%2306b6d4' stroke-width='4'/></svg>")
         12 12,

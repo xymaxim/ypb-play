@@ -130,7 +130,7 @@
             >{formatOffset(explorer.timezoneOffset)}</span
                                                       >
           {#if isPlayheadOutOfView}
-            <span class="absolute top-0 h-7 w-7 p-0.5 mx-auto left-0 right-0 items-center rounded-full bg-[var(--ypb-play-200)]">
+            <span class="absolute top-0 h-7 w-7 p-0.5 mx-auto left-0 right-0 items-center rounded-full bg-[var(--ypb-play-200)] ring-2 ring-[var(--background)]">
               <ArrowUpRightIcon size={14} weight="bold" class="text-foreground h-full w-full" />
 </span>
           {/if}

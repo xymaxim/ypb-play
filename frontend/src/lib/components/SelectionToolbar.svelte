@@ -1,5 +1,6 @@
 <script lang="ts">
   import * as Tabs from "$lib/components/ui/tabs/index.js";
+  import RewindIcon from "phosphor-svelte/lib/RewindIcon";
   import { getExplorerContext } from "../explorer.svelte";
   import SelectedPanel from "./SelectedPanel.svelte";
   import IntervalPanel from "./IntervalPanel.svelte";
@@ -42,18 +43,15 @@
     class="relative flex w-full flex-row items-center"
   >
     <Tabs.List
-      class="z-10 flex h-auto w-[80px] shrink-0 flex-row gap-1 bg-[var(--background)]"
+      class="z-10 flex h-auto w-[80px] flex-row gap-1 bg-[var(--background)]"
     >
-      <Tabs.Trigger value="selected">
-        <div
-          class="h-4 w-3 rounded-[5px]"
-          style="background: var(--ypb-selected)"
-        ></div>
+      <Tabs.Trigger value="selected" class="z-20">
+        <RewindIcon weight="bold" class="h-auto! w-auto!" size={20} />
       </Tabs.Trigger>
       <Tabs.Trigger
         value="interval"
         disabled={markA === null && markB === null}
-        class="font-bold tracking-tight"
+        class="relative left-[-15px] font-bold tracking-tight"
       >
         AB
       </Tabs.Trigger>
@@ -89,10 +87,10 @@
   @reference "../../app.css";
 
   :global([data-tabs-trigger]) {
-    @apply h-8 w-[35px] cursor-pointer rounded-xl border-3 text-xs shadow-none data-[state=active]:pointer-events-none data-[state=active]:border-3 data-[state=active]:border-gray-300;
+    @apply h-8 w-8 cursor-pointer rounded-full bg-neutral-400 text-sm text-xs text-neutral-100 shadow-none data-[state=active]:pointer-events-none data-[state=active]:bg-neutral-500;
   }
   :global([data-tabs-trigger]):hover {
-    @apply h-8 rounded-xl border-3 border-gray-200 bg-gray-200;
+    @apply h-8 bg-neutral-400/80;
   }
   :global([data-slot="tabs-content"]) {
     @apply ml-[-80px] inline-flex h-10 items-center py-1;

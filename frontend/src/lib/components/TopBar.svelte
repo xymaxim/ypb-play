@@ -88,7 +88,7 @@
         : "bg-neutral-200 hover:bg-neutral-300/70"}
     >
       <InputGroupInput
-        class="text-sm font-medium text-center"
+        class="text-center text-sm font-medium"
         bind:ref={inputEl}
         value={displayValue}
         type="text"

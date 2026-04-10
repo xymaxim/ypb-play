@@ -91,7 +91,7 @@
       {onTogglePlayPause}
     />
 
-    <Timeline {seekableRange} {onRewind} />
+    <Timeline {seekableRange} {onRewind} {rewindDisabled} />
 
     {#if explorer.showTimelineViewRange}
       <TimelineViewRange />

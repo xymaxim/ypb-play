@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ArrowArcLeftIcon from "phosphor-svelte/lib/ArrowArcLeftIcon";
   import { getExplorerContext } from "../explorer.svelte";
   import { MS_PER_HOUR } from "../utils/dateUtils";
   import { useElementSize } from "../utils/domUtils.svelte";
@@ -18,9 +19,10 @@
   interface Props {
     seekableRange: { start: number; end: number } | null;
     onRewind: (interval: string) => void;
+    rewindDisabled: boolean;
   }
 
-  let { seekableRange, onRewind }: Props = $props();
+  let { seekableRange, onRewind, rewindDisabled }: Props = $props();
 
   // Context
   const explorer = getExplorerContext();
@@ -32,6 +34,7 @@
   let hoverPx = $state<number | null>(null);
   let isHovering = $state(false);
   let shiftHeld = $state(false);
+  let isHoveringButton = $state(false);
 
   // Constants
   const notAvailableMessage = "Not available for rewind";
@@ -139,7 +142,8 @@
   function onMouseMove(e: MouseEvent) {
     const px = e.clientX - timelineEl.getBoundingClientRect().left;
     const ts = range ? pixelToTime(px, range, bar.width) : null;
-    hoverPx = ts && isAvailable(ts) ? px : null;
+    const avail = ts && isAvailable(ts);
+    hoverPx = avail ? px : null;
   }
 
   function onMouseEnter() {
@@ -148,7 +152,7 @@
     window.addEventListener("keyup", onKeyUp);
   }
 
-  function onMouseLeave() {
+  function onMouseLeave(e: MouseEvent) {
     hoverPx = null;
     isHovering = false;
     shiftHeld = false;
@@ -206,7 +210,7 @@
 
   <div
     bind:this={timelineEl}
-    class="group relative h-[60px] w-full cursor-pointer rounded-md transition-[filter]"
+    class="group relative h-[60px] w-full rounded-md transition-[filter]"
     style="background: {stripeGradient} {stripeOffsetPx}px 0 / {stripeWidthPx}px 100%;"
     class:blur-sm={showScrubBar}
     class:pointer-events-none={showScrubBar}
@@ -254,6 +258,26 @@
       style="inset: -15px 0"
     >
       {#if selectedTimePx !== null}
+        {#if !rewindDisabled}
+          <button
+            type="button"
+            class="pointer-events-auto absolute top-[50px]! z-110 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-[var(--ypb-selected-light)] text-black shadow-md transition-opacity hover:opacity-90 focus-visible:outline-hidden"
+            style="left: {selectedTimePx}px; inset-block: 0; margin-block: auto; transform: translateX(-50%);"
+            onclick={(e) => {
+              e.stopPropagation();
+              isHoveringButton = false;
+              if (explorer.selectedTime !== null) {
+                onRewind(new Date(explorer.selectedTime).toISOString());
+              }
+            }}
+            onmouseenter={() => (isHoveringButton = true)}
+            onmouseleave={() => (isHoveringButton = false)}
+            title="Rewind to selected time"
+          >
+            <ArrowArcLeftIcon size={18} weight="bold" />
+          </button>
+        {/if}
+
         <TimelineNeedle
           px={selectedTimePx}
           color="var(--ypb-selected)"
@@ -266,17 +290,17 @@
         class="needle-play pointer-events-none absolute top-0 bottom-0 z-100 w-[3px] rounded-full"
         style="left: 0; background: var(--ypb-play); will-change: transform;"
       ></div>
-      {#if hoverPx !== null}
+      {#if hoverPx !== null && !isHoveringButton}
         <TimelineNeedle
           px={hoverPx}
           color="var(--ypb-selected)"
           lineStyle="dotted"
-          style="filter: none; z-index:100"
+          style="filter: none; z-index: 100;"
           showHead={false}
         />
         <span
-          class="absolute rounded-md bg-[var(--ypb-selected-800)] px-1.5 py-0.25 text-sm font-medium tabular-nums"
-          style="left: {hoverPx}px; bottom: 100%; transform: translateX(-50%); margin-bottom: -12px; z-index: 100"
+          class="absolute rounded-md bg-[var(--ypb-selected-light)] px-1.5 py-0.25! text-sm font-medium tabular-nums"
+          style="left: {hoverPx}px; bottom: 100%; transform: translateX(-50%); margin-bottom: -11px; z-index: 100"
           >{hoverTime}</span
         >
       {/if}

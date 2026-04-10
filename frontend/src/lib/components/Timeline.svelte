@@ -31,14 +31,19 @@
   // State
   let timelineEl = $state<HTMLDivElement | null>(null);
   let playheadEl = $state<HTMLDivElement | null>(null);
-  let hoverPx = $state<number | null>(null);
-  let hoverPy = $state<number | null>(null);
   let isHovering = $state(false);
-  let shiftHeld = $state(false);
   let isHoveringButton = $state(false);
+  let shiftHeld = $state(false);
+
+  // Hover tracking
+  let hoverLabelEl = $state<HTMLDivElement | null>(null);
+  let hoverPx: number | null = null;
+  let hoverPy: number | null = null;
+  let rafId: number | null = null;
 
   // Constants
-  const notAvailableMessage = "Not available for rewind";
+  const notAvailableMessage = "Outside rewind range";
+
   // Derived
   const showScrubBar = $derived(
     shiftHeld && isHovering && !explorer.showTimelineViewRange,

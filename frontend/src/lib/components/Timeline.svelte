@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onDestroy } from "svelte";
   import ArrowArcLeftIcon from "phosphor-svelte/lib/ArrowArcLeftIcon";
   import { getExplorerContext } from "../explorer.svelte";
   import { MS_PER_HOUR } from "../utils/dateUtils";
@@ -100,13 +101,6 @@
     return timeToPixel(t, range, bar.width);
   });
 
-  const hoverTime = $derived.by<string | null>(() => {
-    if (hoverPx === null || range === null) return null;
-    const spanMs = range.end - range.start;
-    const ts = snapTime(pixelToTime(hoverPx, range, bar.width), spanMs);
-    return formatHoverTime(ts, spanMs, explorer.timezoneOffset);
-  });
-
   const unavailableLeftPx = $derived.by<number | null>(() => {
     const ar = explorer.availableRange;
     if (!ar || !range) return null;
@@ -121,10 +115,43 @@
     return timeToPixel(Math.max(ar.end, range.start), range, bar.width);
   });
 
+  // Helpers
   function isAvailable(ts: number): boolean {
     const ar = explorer.availableRange;
     if (!ar) return true;
     return ts >= ar.start && ts <= ar.end;
+  }
+
+  // Hover tracking
+  function tick() {
+    if (hoverLabelEl) {
+      if (hoverPx !== null && hoverPy !== null) {
+        hoverLabelEl.style.display = "block";
+        hoverLabelEl.style.left = `${hoverPx}px`;
+        hoverLabelEl.style.top = `${hoverPy}px`;
+
+        if (range) {
+          const spanMs = range.end - range.start;
+          const ts = snapTime(pixelToTime(hoverPx, range, bar.width), spanMs);
+          const label = formatHoverTime(ts, spanMs, explorer.timezoneOffset);
+          hoverLabelEl.textContent = label;
+        }
+      } else {
+        hoverLabelEl.style.display = "none";
+      }
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function startHoverTracking() {
+    if (!rafId) rafId = requestAnimationFrame(tick);
+  }
+
+  function stopHoverTracking() {
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
   }
 
   // Effects
@@ -157,6 +184,7 @@
 
   function onMouseEnter() {
     isHovering = true;
+    startHoverTracking();
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
   }
@@ -166,6 +194,7 @@
     hoverPy = null;
     isHovering = false;
     shiftHeld = false;
+    stopHoverTracking();
     window.removeEventListener("keydown", onKeyDown);
     window.removeEventListener("keyup", onKeyUp);
   }
@@ -197,6 +226,12 @@
     hoverPx = null;
     hoverPy = null;
   }
+
+  onDestroy(() => {
+    stopHoverTracking();
+    window.removeEventListener("keydown", onKeyDown);
+    window.removeEventListener("keyup", onKeyUp);
+  });
 </script>
 
 <div
@@ -306,18 +341,12 @@
         class="needle-play pointer-events-none absolute top-0 bottom-0 z-100 w-[3px] rounded-full"
         style="left: 0; background: var(--ypb-play); will-change: transform;"
       ></div>
-      {#if hoverPx !== null && !isHoveringButton}
-        <div
-          class="pointer-events-none absolute z-100"
-          style="left: {hoverPx}px; top: {hoverPy}px; transform: translate(-50%, -50%); margin-top: -8px;"
-        >
-          <span
-            class="rounded-md bg-[var(--ypb-selected-light)] px-1.5 py-0.5 text-sm font-medium tabular-nums"
-          >
-            {hoverTime}
-          </span>
-        </div>
-      {/if}
+
+      <div
+        bind:this={hoverLabelEl}
+        class="pointer-events-none absolute z-100 rounded-md bg-[var(--ypb-selected-light)] px-1.5 text-sm font-medium tabular-nums"
+        style="display: none; transform: translate(-50%, -50%); margin-top: -8px;"
+      ></div>
     </div>
 
     {#if explorer.selectedTime === null}

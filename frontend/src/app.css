@@ -5,46 +5,13 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-  --font-sans: "Inter", sans-serif;
-}
-
-@font-face {
-  font-display: swap;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 400;
-  src: url("/static/fonts/inter-v20-cyrillic_greek_latin_latin-ext-regular.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-display: swap;
-  font-family: "Inter";
-  font-style: italic;
-  font-weight: 400;
-  src: url("/static/fonts/inter-v20-cyrillic_greek_latin_latin-ext-italic.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-display: swap;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 500;
-  src: url("/static/fonts/inter-v20-cyrillic_greek_latin_latin-ext-500.woff2")
-    format("woff2");
-}
-
-@font-face {
-  font-display: swap;
-  font-family: "Inter";
-  font-style: normal;
-  font-weight: 700;
-  src: url("/static/fonts/inter-v20-cyrillic_greek_latin_latin-ext-700.woff2")
-    format("woff2");
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+
   --radius: 0.625rem;
   --background: #f4f4f5;
   --foreground: oklch(0.145 0 0);

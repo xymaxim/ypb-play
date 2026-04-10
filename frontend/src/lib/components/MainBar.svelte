@@ -12,7 +12,6 @@
   import GearIcon from "phosphor-svelte/lib/GearIcon";
   import PauseIcon from "phosphor-svelte/lib/PauseIcon";
   import PlayIcon from "phosphor-svelte/lib/PlayIcon";
-  import RewindIcon from "phosphor-svelte/lib/RewindIcon";
   import BroadcastIcon from "phosphor-svelte/lib/BroadcastIcon";
   import { getExplorerContext } from "../explorer.svelte";
   import { clampViewRange } from "../utils/timelineUtils";
@@ -102,28 +101,14 @@
 
 <div class="mt-1 grid w-full" style="grid-template-columns: 1fr auto 1fr;">
   <!-- Left -->
-  <div class="flex flex-row justify-end">
-    {#if (!rewindDisabled || explorer.isRewinding) && explorer.selectedTime}
-      <Button
-        title="Rewind"
-        size="lg"
-        class="pointer-events-auto mr-6 h-10 rounded-full border-none px-4 py-0 text-foreground"
-        style="background: linear-gradient(to right, rgb(233 233 233) 0%, var(--ypb-selected-700) 70%, oklch(0.8194 0.1242 193.06) 100%)"
-        disabled={!explorer.selectedTime || rewindDisabled}
-        onclick={() => {
-          if (explorer.selectedTime !== null)
-            onRewind(
-              new Date(explorer.selectedTime).toISOString(),
-              explorer.pauseAfterRewind,
-            );
-        }}
+  <div class="flex flex-row justify-center">
+    {#if explorer.isRewinding && explorer.selectedTime}
+      <div
+        class="mr-6 flex h-9 items-center justify-center rounded-full px-2.5 text-foreground"
+        style="background: linear-gradient(to right, oklch(0.8194 0.1242 193.06) 0%, var(--ypb-selected-700) 100%)"
       >
-        {#if !explorer.isRewinding}
-          <RewindIcon style="width: 24px; height: 24px" />
-        {:else}
-          <DotsThreeOutlineIcon style="width: 24px; height: 24px" />
-        {/if}
-      </Button>
+        <DotsThreeOutlineIcon class="size-6" />
+      </div>
     {/if}
   </div>
 

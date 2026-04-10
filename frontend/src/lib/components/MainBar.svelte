@@ -140,30 +140,19 @@
       <span class="text-sm text-gray-400">Not playing</span>
     {/if}
 
-    <div class="play-toolbar__group">
+    <div class="play-toolbar__group ml-4">
       <Button
         title={isPlaying ? "Pause" : "Play"}
         variant="ghost"
         size="icon"
+        class="p-0! {isPlaying ? '!bg-[var(--ypb-play-light)]' : ''}"
         onclick={onTogglePlayPause}
       >
-        {#if isPlaying}<PauseIcon />{:else}<PlayIcon />{/if}
+        {#if isPlaying}<PauseIcon weight="fill" class="size-4.5" />{:else}<PlayIcon weight="fill" class="size-4.5" />{/if}
       </Button>
       <Button title="Repeat" variant="ghost" size="icon" onclick={onReplay}>
-        <ArrowCounterClockwiseIcon />
+        <ArrowCounterClockwiseIcon weight="bold" class="size-4.5" />
       </Button>
-      <Button
-        title="Seek back"
-        variant="ghost"
-        size="icon"
-        onclick={() => onStep(-2)}>&minus;2s</Button
-      >
-      <Button
-        title="Seek forward"
-        variant="ghost"
-        size="icon"
-        onclick={() => onStep(2)}>+2s</Button
-      >
     </div>
 
     <div class="play-toolbar__group">
@@ -171,6 +160,7 @@
         title="Mark A"
         variant="ghost"
         size="icon"
+        class="text-base font-bold"
         onclick={() => {
           if (explorer.playheadTime !== null)
             explorer.assignMark("A", explorer.playheadTime);
@@ -180,6 +170,7 @@
         title="Mark B"
         variant="ghost"
         size="icon"
+        class="text-base font-bold"
         onclick={() => {
           if (explorer.playheadTime !== null)
             explorer.assignMark("B", explorer.playheadTime);
@@ -336,14 +327,14 @@
   @reference "tailwindcss";
 
   .play-toolbar {
-    @apply inline-flex h-10! min-w-120 flex-row items-center gap-4 rounded-xl px-3 py-1;
+    @apply inline-flex h-10! min-w-120 flex-row items-center gap-1 rounded-xl px-3 py-1;
   }
 
   .play-toolbar :global(button[data-slot="button"]) {
-    @apply h-8 w-[35px] rounded-full bg-[var(--ypb-play-light)] hover:bg-[var(--ypb-play-light)]/60;
+    @apply h-8 w-10 rounded-full bg-neutral-200 hover:bg-[var(--ypb-play-light)]/50;
   }
 
   .play-toolbar__group {
-    @apply flex items-center gap-0;
+    @apply flex items-center gap-1;
   }
 </style>

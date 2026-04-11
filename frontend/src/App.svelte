@@ -6,6 +6,7 @@
   import { formatOffset } from "./lib/utils/dateTimeUtils";
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
+  import Toast from "./lib/components/Toast.svelte";
 
   export const StreamStatus = {
     IDLE: "idle",
@@ -100,16 +101,31 @@
     }
   }
 
+  // Toast
+  let toastMessage = $state<string | null>(null);
+  let toastTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function toast(msg: string, durationMs = 2000) {
+    toastMessage = msg;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toastMessage = null;
+      toastTimer = null;
+    }, durationMs);
+  }
+
   function handleScreenshot(ts: number) {
     const dataUrl = player.captureScreenshot();
     if (!dataUrl || !player.streamInfo) return;
     const shifted = new Date(ts + explorer.timezoneOffset * 60 * 1000);
     const iso = shifted.toISOString().slice(0, 19).replace(/[:-]/g, "");
     const offset = formatOffset(explorer.timezoneOffset);
+    const filename = `Screenshot_${player.streamInfo.id}_${iso}${offset}.png`;
     const a = document.createElement("a");
     a.href = dataUrl;
-    a.download = `Screenshot_${player.streamInfo.id}_${iso}${offset}.png`;
+    a.download = filename;
     a.click();
+    toast("Screenshot saved");
   }
 
   // Lifecycle
@@ -126,7 +142,12 @@
   });
 </script>
 
-<main class="mx-auto flex w-full max-w-4xl min-w-2xl flex-col gap-2 px-6 py-3">
+<main
+  class="relative mx-auto flex w-full max-w-4xl min-w-2xl flex-col gap-2 px-6 py-3"
+>
+  {#if toastMessage}
+    <Toast message={toastMessage} />
+  {/if}
   <TopBar {onStreamStart} streamTitle={player.streamInfo?.title ?? null} />
   <div
     class="flex min-h-[362px] w-full justify-center overflow-hidden rounded-lg bg-black"

@@ -167,7 +167,8 @@
         title="Take screenshot"
         variant="ghost"
         size="icon"
-        onclick={() => onScreenshot(explorer.playheadTime)}>
+        onclick={() => onScreenshot(explorer.playheadTime)}
+      >
         <Camera class="size-4.5" />
       </Button>
     </div>
@@ -194,7 +195,6 @@
         }}>B</Button
       >
     </div>
-
   </div>
 
   <!-- Right -->

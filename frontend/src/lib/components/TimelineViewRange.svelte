@@ -217,7 +217,7 @@
           onclick={zoomOut}
           disabled={zoomIdx >= zoomKeys.length - 1}
         >
-          <Minus/>
+          <Minus />
         </Button>
         <Button
           variant="ghost"

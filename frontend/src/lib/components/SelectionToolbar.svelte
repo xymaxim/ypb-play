@@ -45,7 +45,7 @@
     <Tabs.List
       class="z-10 flex h-auto w-[80px] flex-row gap-1 bg-[var(--background)]"
     >
-      <Tabs.Trigger value="selected" class="z-20">
+      <Tabs.Trigger value="selected">
         <Rewind class="size-5" />
       </Tabs.Trigger>
       <Tabs.Trigger
@@ -87,10 +87,10 @@
   @reference "../../app.css";
 
   :global([data-tabs-trigger]) {
-    @apply h-8 w-8 cursor-pointer rounded-full bg-neutral-400 text-sm text-xs text-neutral-100 shadow-none data-[state=active]:pointer-events-none data-[state=active]:bg-neutral-500;
+    @apply h-8 w-8 cursor-pointer rounded-full bg-neutral-400 text-sm text-xs text-neutral-100 shadow-none data-[state=active]:pointer-events-none data-[state=active]:bg-neutral-600 data-[state=active]:z-20;
   }
   :global([data-tabs-trigger]):hover {
-    @apply h-8 bg-neutral-400/80;
+    @apply h-8 bg-neutral-400/70;
   }
   :global([data-slot="tabs-content"]) {
     @apply ml-[-80px] inline-flex h-10 items-center py-1;

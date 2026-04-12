@@ -126,7 +126,12 @@
   // Hover tracking
   function tick() {
     if (hoverLabelEl) {
-      if (hoverPx !== null && hoverPy !== null && !isHoveringButton && !shiftHeld) {
+      if (
+        hoverPx !== null &&
+        hoverPy !== null &&
+        !isHoveringButton &&
+        !shiftHeld
+      ) {
         hoverLabelEl.style.display = "block";
         hoverLabelEl.style.left = `${hoverPx}px`;
         hoverLabelEl.style.top = `${hoverPy}px`;

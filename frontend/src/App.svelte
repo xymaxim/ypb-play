@@ -51,7 +51,7 @@
       await StartStream(videoId);
       explorerCell.current.destroy();
       explorerCell.current = createExplorer();
-      player.destroy();
+      await player.destroy();
       player = createPlayer(() => videoEl);
       streamStatus = StreamStatus.LOADING;
       await player.init();

@@ -81,17 +81,22 @@ type Config struct {
 	SegmentsDir string
 	// Response delay for /mpd requests (in s).
 	MPDDelay int
+	// Stream start delay (in s)
+	StartDelay int
 	// Stream start (in hours ago).
 	StreamStart int
 }
 
 type Stream struct {
+	config Config
 	server *http.Server
 	cancel context.CancelFunc
 	done   chan struct{}
 }
 
 func NewStream(ctx context.Context, cfg Config) *Stream {
+	time.Sleep(time.Duration(cfg.StartDelay) * time.Second)
+
 	ctx, cancel := context.WithCancel(ctx)
 
 	mux := http.NewServeMux()
@@ -103,6 +108,7 @@ func NewStream(ctx context.Context, cfg Config) *Stream {
 	handler := corsMiddleware(loggingMiddleware(mux))
 
 	stream := &Stream{
+		config: cfg,
 		server: &http.Server{
 			Addr:    ":" + strconv.Itoa(cfg.Port),
 			Handler: handler,

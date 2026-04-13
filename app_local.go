@@ -17,7 +17,7 @@ func newStream(ctx context.Context, videoID string, port int, onYtdlpStdout func
 		VideoID:     videoID,
 		Port:        port,
 		SegmentsDir: "./local/dash/segments/",
-		MPDDelay:    0,
+		MPDDelay:    1,
 		StartDelay:  10,
 		StreamStart: 200,
 		OnStdout:    onYtdlpStdout,

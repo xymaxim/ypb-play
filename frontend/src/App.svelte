@@ -185,9 +185,17 @@
   {/if}
   <TopBar {onStreamStart} streamTitle={player.streamInfo?.title ?? null} streamStatus={streamStatus} />
   <div
-    class="flex min-h-[362px] w-full justify-center overflow-hidden rounded-lg bg-black"
+    class="cursor-default flex min-h-[362px] w-full justify-center overflow-hidden rounded-lg bg-black"
+    class:bg-neutral-200={!player.streamInfo}
+    class:bg-black={player.streamInfo}
   >
     <div class="group relative flex w-full items-center justify-center">
+        {#if !player.streamInfo}
+            <div class="absolute inset-0 z-10 flex items-center justify-center gap-6">
+                ...
+            </div>
+      {/if}
+
       {#if player.streamInfo}
         <div
           class="absolute top-0 right-0 left-0 z-10 flex flex-col gap-0.5 px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100"

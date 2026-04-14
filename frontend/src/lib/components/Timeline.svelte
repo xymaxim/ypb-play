@@ -3,7 +3,7 @@
   import { Undo } from "lucide-svelte";
   import { getExplorerContext } from "../explorer.svelte";
   import { MS_PER_HOUR } from "../utils/dateUtils";
-  import { useElementSize } from "../utils/domUtils.svelte";
+  import { useElementSize } from "$lib/hooks/useElementSize.svelte";
   import { pixelToTime, timeToPixel } from "../utils/timePixelUtils";
   import {
     buildTicks,

@@ -109,7 +109,9 @@
   <!-- Center -->
   <div class="play-toolbar">
     {#if explorer.isRewinding}
-      <div class="flex w-48 items-center justify-center gap-0.5 text-muted-foreground">
+      <div
+        class="flex w-48 items-center justify-center gap-0.5 text-muted-foreground"
+      >
         <Circle size={6} strokeWidth={5} fill="none" />
         <Circle size={6} strokeWidth={5} fill="none" />
         <Circle size={6} strokeWidth={5} fill="none" />

@@ -3,11 +3,16 @@
   import { CancelStreamStart, StartStream } from "../wailsjs/go/main/App";
   import { EventsOn } from "../wailsjs/runtime/runtime";
   import { ChevronDown, ChevronUp, Square } from "lucide-svelte";
-  import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "$lib/components/ui/collapsible";
+  import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+  } from "$lib/components/ui/collapsible";
   import * as Card from "$lib/components/ui/card";
   import { createExplorer, setExplorerContext } from "./lib/explorer.svelte";
   import { createPlayer } from "./lib/player.svelte";
   import { formatOffset } from "./lib/utils/dateTimeUtils";
+  import OrbitalCanvas from "./lib/components/orbiters/OrbitalCanvas.svelte";
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
   import Toast from "./lib/components/Toast.svelte";
@@ -183,18 +188,49 @@
   {#if toastMessage}
     <Toast message={toastMessage} />
   {/if}
-  <TopBar {onStreamStart} streamTitle={player.streamInfo?.title ?? null} streamStatus={streamStatus} />
+  <TopBar
+    {onStreamStart}
+    streamTitle={player.streamInfo?.title ?? null}
+    {streamStatus}
+  />
   <div
-    class="cursor-default flex min-h-[362px] w-full justify-center overflow-hidden rounded-lg bg-black"
-    class:bg-neutral-200={!player.streamInfo}
+    class="flex min-h-[362px] w-full cursor-default justify-center overflow-hidden rounded-lg bg-black"
+    class:bg-transparent={!player.streamInfo}
     class:bg-black={player.streamInfo}
     class:pointer-events-none={streamStatus !== StreamStatus.READY}
   >
     <div class="group relative flex w-full items-center justify-center">
-        {#if !player.streamInfo}
-            <div class="absolute inset-0 z-10 flex items-center justify-center gap-6">
-                ...
-            </div>
+      {#if !player.streamInfo}
+        <div
+          class="absolute inset-0 z-10 flex items-center justify-center gap-6"
+        >
+          <div
+            class="absolute z-10 aspect-video h-60 rounded-lg bg-black"
+          ></div>
+          <OrbitalCanvas
+            settings={{
+              radius: 300,
+              nudge: 0,
+              orbiters: [
+                {
+                  type: "rect",
+                  angle: 0,
+                  settings: { width: 42, height: 122, fill: "lightgray" },
+                },
+                {
+                  type: "rect",
+                  angle: 0,
+                  settings: { width: 32, height: 32, fill: "gray" },
+                },
+              ],
+              generate: {
+                count: 4,
+                type: "bead",
+                randomise: { size: [200, 260], colors: true },
+              },
+            }}
+          />
+        </div>
       {/if}
 
       {#if player.streamInfo}
@@ -231,29 +267,35 @@
   </div>
 
   {#if streamStatus === StreamStatus.STARTING}
-      <Card.Root class="mt-6 bg-[var(--background)] rounded-lg gap-0">
-          <Card.Header>
-              <Card.Title class="flex justify-between text-base">
-                  Start stream playback
-                  <a
-                      class="flex items-center cursor-pointer font-semibold text-black text-sm transition-colors hover:text-muted-foreground gap-1.5"
-                      onclick={onCancelStreamStart}
-                  >
-                      Cancel
-                  </a>
-              </Card.Title>
-          </Card.Header>
+    <Card.Root class="mt-6 gap-0 rounded-lg bg-[var(--background)]">
+      <Card.Header>
+        <Card.Title class="flex justify-between text-base">
+          Start stream playback
+          <a
+            class="flex cursor-pointer items-center gap-1.5 text-sm font-semibold text-black transition-colors hover:text-muted-foreground"
+            onclick={onCancelStreamStart}
+          >
+            Cancel
+          </a>
+        </Card.Title>
+      </Card.Header>
       <Card.Content class="pt-0">
         <Collapsible bind:open={showStdoutLog}>
           <div class="flex items-center justify-between text-sm">
-            <CollapsibleTrigger class="flex items-center gap-2 text-muted-foreground">
-                <p class="animate-pulse">Running yt-dlp to fetch video info...</p>
-                {#if showStdoutLog}<ChevronUp size={16} />{:else}<ChevronDown size={16} />{/if}
+            <CollapsibleTrigger
+              class="flex items-center gap-2 text-muted-foreground"
+            >
+              <p class="animate-pulse">Running yt-dlp to fetch video info...</p>
+              {#if showStdoutLog}<ChevronUp size={16} />{:else}<ChevronDown
+                  size={16}
+                />{/if}
             </CollapsibleTrigger>
           </div>
           <CollapsibleContent>
             {#if ytdlpStdout}
-              <div class="mt-3 max-h-32 overflow-y-auto rounded-md bg-neutral-50 p-3 font-mono text-sm text-muted-foreground whitespace-pre-wrap">
+              <div
+                class="mt-3 max-h-32 overflow-y-auto rounded-md bg-neutral-50 p-3 font-mono text-sm whitespace-pre-wrap text-muted-foreground"
+              >
                 {ytdlpStdout}
               </div>
             {/if}
@@ -262,7 +304,9 @@
       </Card.Content>
     </Card.Root>
   {:else if streamStatus === StreamStatus.LOADING}
-    <p class="mt-8 w-full text-center text-base animate-pulse text-muted-foreground">
+    <p
+      class="mt-8 w-full animate-pulse text-center text-base text-muted-foreground"
+    >
       Loading stream...
     </p>
   {:else if streamStatus === StreamStatus.READY}

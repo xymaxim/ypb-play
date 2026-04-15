@@ -2,15 +2,13 @@
   import { onMount } from "svelte";
   import { CancelStreamStart, StartStream } from "../wailsjs/go/main/App";
   import { EventsOn } from "../wailsjs/runtime/runtime";
-  import { ChevronDown, ChevronUp, Square } from "lucide-svelte";
-  import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "$lib/components/ui/collapsible";
-  import * as Card from "$lib/components/ui/card";
   import { createExplorer, setExplorerContext } from "./lib/explorer.svelte";
   import { createPlayer } from "./lib/player.svelte";
   import { formatOffset } from "./lib/utils/dateTimeUtils";
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
   import Toast from "./lib/components/Toast.svelte";
+  import StartingProgress from "./lib/components/StartingProgress.svelte";
 
   export const StreamStatus = {
     IDLE: "idle",
@@ -231,36 +229,11 @@
   </div>
 
   {#if streamStatus === StreamStatus.STARTING}
-      <Card.Root class="mt-6 bg-[var(--background)] rounded-lg gap-0">
-          <Card.Header>
-              <Card.Title class="flex justify-between text-base">
-                  Start stream playback
-                  <a
-                      class="flex items-center cursor-pointer font-semibold text-black text-sm transition-colors hover:text-muted-foreground gap-1.5"
-                      onclick={onCancelStreamStart}
-                  >
-                      Cancel
-                  </a>
-              </Card.Title>
-          </Card.Header>
-      <Card.Content class="pt-0">
-        <Collapsible bind:open={showStdoutLog}>
-          <div class="flex items-center justify-between text-sm">
-            <CollapsibleTrigger class="flex items-center gap-2 text-muted-foreground">
-                <p class="animate-pulse">Running yt-dlp to fetch video info...</p>
-                {#if showStdoutLog}<ChevronUp size={16} />{:else}<ChevronDown size={16} />{/if}
-            </CollapsibleTrigger>
-          </div>
-          <CollapsibleContent>
-            {#if ytdlpStdout}
-              <div class="mt-3 max-h-32 overflow-y-auto rounded-md bg-neutral-50 p-3 font-mono text-sm text-muted-foreground whitespace-pre-wrap">
-                {ytdlpStdout}
-              </div>
-            {/if}
-          </CollapsibleContent>
-        </Collapsible>
-      </Card.Content>
-    </Card.Root>
+    <StartingProgress
+      onCancel={onCancelStreamStart}
+      stdout={ytdlpStdout}
+      showLog={showStdoutLog}
+    />
   {:else if streamStatus === StreamStatus.LOADING}
     <p class="mt-8 w-full text-center text-base animate-pulse text-muted-foreground">
       Loading stream...

@@ -7,22 +7,29 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
   import { Copy, X } from "lucide-svelte";
+  import { extractVideoId } from "$lib/utils/urlUtils";
 
   interface Props {
-    onStreamStart: () => void;
+    onStreamStart: (videoId: string) => void;
     streamTitle: string | null;
     streamStatus: string;
+    videoId: string | null;
   }
 
-  let { onStreamStart, streamTitle, streamStatus }: Props = $props();
+  let { onStreamStart, streamTitle, streamStatus, videoId }: Props = $props();
 
   let inputEl = $state<HTMLInputElement | null>(null);
   let inputValue = $state("");
   let focused = $state(false);
   let loading = $state(false);
   let error = $state(false);
+  let currentVideoId = $state<string | null>(null);
 
   $effect(() => {
+    if (videoId && videoId !== currentVideoId) {
+      currentVideoId = videoId;
+      inputValue = getCanonicalUrl(videoId);
+    }
     if (streamStatus === "idle") {
       currentVideoId = null;
       inputValue = "";
@@ -30,23 +37,6 @@
       error = false;
     }
   });
-
-  function extractVideoId(input: string): string | null {
-    const trimmed = input.trim();
-    const patterns = [
-      /(?:youtube\.com\/watch\?[^#]*v=)([a-zA-Z0-9_-]{11})/,
-      /(?:youtube\.com\/live\/)([a-zA-Z0-9_-]{11})/,
-      /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-      /^([a-zA-Z0-9_-]{11})$/,
-    ];
-    for (const pattern of patterns) {
-      const match = trimmed.match(pattern);
-      if (match) return match[1];
-    }
-    return null;
-  }
-
-  let currentVideoId = $state<string | null>(null);
 
   function getDisplayUrl(videoId: string): string {
     return `youtube.com/live/${videoId}`;

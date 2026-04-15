@@ -8,7 +8,9 @@
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
   import Toast from "./lib/components/Toast.svelte";
+  import WelcomePane from "./lib/components/WelcomePane.svelte";
   import StartingProgress from "./lib/components/StartingProgress.svelte";
+  import StartingDoodle from "./lib/components/StartingDoodle.svelte";
 
   export const StreamStatus = {
     IDLE: "idle",
@@ -30,6 +32,7 @@
   // State
   let videoEl = $state<HTMLVideoElement | null>(null);
   let streamStatus = $state<StreamStatus>(StreamStatus.IDLE);
+  let hasLoadedStream = $state(false);
   let ytdlpStdout = $state<string>("");
   let unlistenStdout: (() => void) | null = null;
   let showStdoutLog = $state(false);
@@ -68,6 +71,7 @@
       streamStatus = StreamStatus.LOADING;
       await player.init();
       streamStatus = StreamStatus.READY;
+      hasLoadedStream = true;
     } catch (err) {
       console.error(err);
       if (streamStatus === StreamStatus.STARTING) {
@@ -92,6 +96,7 @@
     player.destroy();
     player = createPlayer(() => videoEl);
     streamStatus = StreamStatus.IDLE;
+    hasLoadedStream = false;
   }
 
   // Keyboard shortcuts
@@ -181,18 +186,42 @@
   {#if toastMessage}
     <Toast message={toastMessage} />
   {/if}
-  <TopBar {onStreamStart} streamTitle={player.streamInfo?.title ?? null} streamStatus={streamStatus} />
+
   <div
-    class="cursor-default flex min-h-[362px] w-full justify-center overflow-hidden rounded-lg bg-black"
-    class:bg-neutral-200={!player.streamInfo}
-    class:bg-black={player.streamInfo}
-    class:pointer-events-none={streamStatus !== StreamStatus.READY}
+    class={"transition-opacity duration-300 " +
+      (!(hasLoadedStream || streamStatus === StreamStatus.LOADING)
+        ? "invisible opacity-0"
+        : "opacity-100")}
   >
-    <div class="group relative flex w-full items-center justify-center">
-        {#if !player.streamInfo}
-            <div class="absolute inset-0 z-10 flex items-center justify-center gap-6">
-                ...
-            </div>
+    <TopBar
+      {onStreamStart}
+      streamTitle={player.streamInfo?.title ?? null}
+      {streamStatus}
+      videoId={player.streamInfo?.id ?? null}
+    />
+  </div>
+
+  <div
+    class="flex min-h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg"
+    class:bg-transparent={streamStatus === StreamStatus.IDLE ||
+      streamStatus === StreamStatus.STARTING}
+    class:bg-black={streamStatus === StreamStatus.LOADING ||
+      streamStatus === StreamStatus.READY}
+    class:pointer-events-none={streamStatus === StreamStatus.LOADING ||
+      streamStatus === StreamStatus.READY}
+    class:overflow-hidden={streamStatus === StreamStatus.LOADING ||
+      streamStatus === StreamStatus.READY}
+  >
+    <div class="group relative flex w-full justify-center">
+      {#if !hasLoadedStream && (streamStatus === StreamStatus.IDLE || streamStatus === StreamStatus.STARTING)}
+        <WelcomePane
+          {onStreamStart}
+          disabled={streamStatus === StreamStatus.STARTING}
+        />
+      {:else if streamStatus === StreamStatus.STARTING}
+        <div class="flex w-full items-center justify-center">
+          <StartingDoodle />
+        </div>
       {/if}
 
       {#if player.streamInfo}
@@ -223,6 +252,7 @@
       <video
         bind:this={videoEl}
         class="block h-auto max-h-full w-auto max-w-full"
+        class:hidden={streamStatus !== StreamStatus.READY}
         muted
       ></video>
     </div>
@@ -235,7 +265,9 @@
       showLog={showStdoutLog}
     />
   {:else if streamStatus === StreamStatus.LOADING}
-    <p class="mt-8 w-full text-center text-base animate-pulse text-muted-foreground">
+    <p
+      class="mt-8 w-full animate-pulse text-center text-base text-muted-foreground"
+    >
       Loading stream...
     </p>
   {:else if streamStatus === StreamStatus.READY}

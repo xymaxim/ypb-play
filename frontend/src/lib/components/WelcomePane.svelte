@@ -4,7 +4,7 @@
   import * as Field from "$lib/components/ui/field";
   import * as InputGroup from "$lib/components/ui/input-group/index.js";
   import { ArrowRight, X } from "lucide-svelte";
-  import StartingDoodle from "$lib/components/StartingDoodle.svelte";
+  import WelcomeDoodle from "$lib/components/WelcomeDoodle.svelte";
   import { extractVideoId } from "$lib/utils/urlUtils";
 
   interface Props {
@@ -44,8 +44,10 @@
   }
 </script>
 
-<div class="pointer-events-auto flex w-full flex-col items-center">
-  <StartingDoodle />
+<div
+  class="pointer-events-auto flex w-full flex-col items-center justify-center"
+>
+  <WelcomeDoodle />
   <div class="mt-10 flex w-full max-w-[640px] justify-center">
     <Field.Field>
       <ButtonGroup.Root class="flex w-full items-center gap-2 px-5">
@@ -57,7 +59,7 @@
                 : "bg-white hover:bg-neutral-50")}
           >
             <InputGroup.Input
-              class="text-center text-sm! font-medium"
+              class="text-center text-base! font-medium!"
               bind:ref={inputEl}
               bind:value={inputValue}
               type="text"

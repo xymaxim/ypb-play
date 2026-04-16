@@ -203,11 +203,10 @@
 
   <div
     class="flex min-h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg"
-    class:bg-transparent={streamStatus === StreamStatus.IDLE ||
+    class:bg-none={streamStatus === StreamStatus.IDLE ||
       streamStatus === StreamStatus.STARTING}
     class:bg-black={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
-
     class:overflow-hidden={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
   >

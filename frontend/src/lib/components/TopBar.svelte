@@ -1,9 +1,5 @@
 <script lang="ts">
-  import {
-    InputGroup,
-    InputGroupAddon,
-    InputGroupInput,
-  } from "$lib/components/ui/input-group/index.js";
+  import * as InputGroup from "$lib/components/ui/input-group/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
   import { Copy, X } from "lucide-svelte";
@@ -81,15 +77,17 @@
 
 <div class="mb-1 flex items-center justify-center gap-2">
   <div class="relative {focused ? 'w-full' : 'w-90'}">
-    <InputGroup
-      class={focused
-        ? "bg-white! shadow-md"
-        : "bg-neutral-200 hover:bg-neutral-300/70"}
+    <InputGroup.Root
+      class="border-none {focused
+        ? 'bg-white! shadow-md'
+        : currentVideoId
+          ? 'bg-neutral-200 hover:bg-white'
+          : 'bg-white'} focus-visible:ring-0!"
     >
-      <InputGroupInput
-        class="text-center text-sm font-medium"
+      <InputGroup.Input
         bind:ref={inputEl}
         value={displayValue}
+        class="text-center text-sm font-medium focus-visible:ring-0!"
         type="text"
         placeholder="Paste YouTube live stream link"
         disabled={loading || streamStatus === "starting"}
@@ -104,31 +102,35 @@
         onkeydown={onKeyDown}
         oninput={(e: Event) => {
           inputValue = (e.target as HTMLInputElement).value;
+          error = false;
         }}
       />
-      {#if focused && currentVideoId}
-        <InputGroupAddon align="inline-end">
+      {#if focused}
+        <InputGroup.Addon align="inline-end" class="absolute right-0">
           <Button
             variant="ghost"
-            size="icon-sm"
-            onclick={() => {
-              inputEl?.blur();
-              focused = false;
+            size="icon"
+            class="rounded-full"
+            title="Dismiss"
+            onmousedown={() => {
+              inputValue = "";
+              inputEl.value = "";
+              inputEl.blur();
             }}
           >
             <X />
           </Button>
-        </InputGroupAddon>
+        </InputGroup.Addon>
       {/if}
-    </InputGroup>
+    </InputGroup.Root>
     {#if focused && currentVideoId}
       <div
-        class="absolute top-full left-0 z-50 mt-1 flex w-full items-center gap-2 rounded-lg border bg-white p-2 shadow-md"
+        class="items-top absolute top-full left-0 z-50 mt-1 flex w-full rounded-lg border bg-white p-3 shadow-md"
       >
-        <div class="flex min-w-0 flex-1 flex-col">
+        <div class="flex min-w-0 flex-1 flex-col gap-0!">
           {#if streamTitle}
             <span
-              class="truncate text-sm font-medium text-neutral-800"
+              class="truncate text-sm font-medium text-foreground"
               title={streamTitle}
             >
               {streamTitle}
@@ -136,7 +138,7 @@
           {:else}
             <Skeleton class="h-4 w-3/4" />
           {/if}
-          <span class="mt-0.5 truncate text-xs text-neutral-500">
+          <span class="truncate text-sm text-muted-foreground">
             {getCanonicalUrl(currentVideoId)}
           </span>
         </div>

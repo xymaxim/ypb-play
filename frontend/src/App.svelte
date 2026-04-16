@@ -187,12 +187,7 @@
     <Toast message={toastMessage} />
   {/if}
 
-  <div
-    class={"transition-opacity duration-300 " +
-      (!(hasLoadedStream || streamStatus === StreamStatus.LOADING)
-        ? "invisible opacity-0"
-        : "opacity-100")}
-  >
+  <div>
     <TopBar
       {onStreamStart}
       streamTitle={player.streamInfo?.title ?? null}
@@ -207,22 +202,10 @@
       streamStatus === StreamStatus.STARTING}
     class:bg-black={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
-
     class:overflow-hidden={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
   >
     <div class="group relative flex w-full justify-center">
-      {#if !hasLoadedStream && (streamStatus === StreamStatus.IDLE || streamStatus === StreamStatus.STARTING)}
-        <WelcomePane
-          {onStreamStart}
-          disabled={streamStatus === StreamStatus.STARTING}
-        />
-      {:else if streamStatus === StreamStatus.STARTING}
-        <div class="flex w-full items-center justify-center">
-          <StartingDoodle />
-        </div>
-      {/if}
-
       {#if player.streamInfo}
         <div
           class="absolute top-0 right-0 left-0 z-10 flex flex-col gap-0.5 px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100"

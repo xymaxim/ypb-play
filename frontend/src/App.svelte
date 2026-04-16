@@ -203,7 +203,7 @@
     class:overflow-hidden={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
   >
-    <div class="group relative flex w-full justify-center">
+    <div class="group relative flex w-full justify-center cursor-default!">
       {#if player.streamInfo}
         <div
           class="absolute top-0 right-0 left-0 z-10 flex flex-col gap-0.5 px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100"

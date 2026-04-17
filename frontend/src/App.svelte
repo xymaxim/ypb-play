@@ -185,14 +185,12 @@
     <Toast message={toastMessage} />
   {/if}
 
-  <div>
-    <TopBar
+   <TopBar
       {onStreamStart}
       streamTitle={player.streamInfo?.title ?? null}
       {streamStatus}
       videoId={player.streamInfo?.id ?? null}
     />
-  </div>
 
   <div
     class="flex min-h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg"

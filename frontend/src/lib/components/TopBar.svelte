@@ -76,9 +76,9 @@
 </script>
 
 <div class="mb-1 flex items-center justify-center gap-2">
-  <div class="relative {focused ? 'w-full' : 'w-90'}">
+  <div class="relative {focused ? 'w-full' : 'w-100'}">
     <InputGroup.Root
-      class="border-none {focused
+      class="rounded-full! border-none {focused
         ? 'bg-white! shadow-md'
         : currentVideoId
           ? 'bg-neutral-200 hover:bg-white'
@@ -125,7 +125,7 @@
     </InputGroup.Root>
     {#if focused && currentVideoId}
       <div
-        class="items-top absolute top-full left-0 z-50 mt-1 flex w-full rounded-lg border bg-white p-3 shadow-md"
+        class="items-top absolute top-full left-0 z-50 mt-1 flex w-full rounded-2xl! border bg-white p-3 shadow-md"
       >
         <div class="flex min-w-0 flex-1 flex-col gap-0!">
           {#if streamTitle}

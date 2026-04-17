@@ -213,7 +213,7 @@
           </Button>
         {/snippet}
       </DropdownMenu.Trigger>
-      <DropdownMenu.Content align="end" class="w-64">
+      <DropdownMenu.Content align="end" class="w-64 rounded-2xl!">
         <DropdownMenu.Item
           class="flex cursor-pointer items-center justify-between gap-2"
           onclick={openTimezoneDialog}

@@ -116,21 +116,6 @@
     </div>
   </div>
 
-  <div class="selection-toolbar__item bg-[var(--ypb-selected-light)]">
-    <Button
-      title="Mark A"
-      variant="ghost"
-      size="icon-sm"
-      onclick={() => explorer.assignMark("A", explorer.selectedTime!)}>A</Button
-    >
-    <Button
-      title="Mark B"
-      variant="ghost"
-      size="icon-sm"
-      onclick={() => explorer.assignMark("B", explorer.selectedTime!)}>B</Button
-    >
-  </div>
-
   <DropdownMenu.Root>
     <DropdownMenu.Trigger>
       {#snippet child({ props })}

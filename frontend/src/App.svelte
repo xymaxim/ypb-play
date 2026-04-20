@@ -1,13 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, untrack } from "svelte";
   import { CancelStreamStart, StartStream } from "../wailsjs/go/main/App";
   import { EventsOn } from "../wailsjs/runtime/runtime";
+  import { Button } from "$lib/components/ui/button/index.js";
   import { createExplorer, setExplorerContext } from "./lib/explorer.svelte";
   import { createPlayer } from "./lib/player.svelte";
   import { formatOffset } from "./lib/utils/dateTimeUtils";
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
+  import WelcomePane from "./lib/components/WelcomePane.svelte";
   import Toast from "./lib/components/Toast.svelte";
+  import StartingPane from "./lib/components/StartingPane.svelte";
   import StartingProgress from "./lib/components/StartingProgress.svelte";
 
   export const StreamStatus = {
@@ -34,8 +37,17 @@
   let ytdlpStdout = $state<string>("");
   let unlistenStdout: (() => void) | null = null;
   let showStdoutLog = $state(false);
+  let welcomeKey = $state(0);
 
   // Effects: player-explorer wiring
+  $effect(() => {
+    if (streamStatus === StreamStatus.IDLE) {
+      untrack(() => {
+        welcomeKey++;
+      });
+    }
+  });
+
   $effect(() => {
     explorer.setPlayheadTime(player.playheadTime?.getTime() ?? null);
   });
@@ -185,23 +197,25 @@
     <Toast message={toastMessage} />
   {/if}
 
-   <TopBar
-      {onStreamStart}
-      streamTitle={player.streamInfo?.title ?? null}
-      {streamStatus}
-      videoId={player.streamInfo?.id ?? null}
-    />
+  <TopBar
+    {onStreamStart}
+    streamTitle={player.streamInfo?.title ?? null}
+    {streamStatus}
+    videoId={player.streamInfo?.id ?? null}
+  />
 
   <div
-    class="flex min-h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg"
-    class:bg-transparent={streamStatus === StreamStatus.IDLE ||
-      streamStatus === StreamStatus.STARTING}
+    class="flex min-h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg
+              {streamStatus === StreamStatus.IDLE ||
+    streamStatus === StreamStatus.STARTING
+      ? 'bg-gradient-to-t from-neutral-200 to-transparent to-80%'
+      : ''}"
     class:bg-black={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
     class:overflow-hidden={streamStatus === StreamStatus.LOADING ||
       streamStatus === StreamStatus.READY}
   >
-    <div class="group relative flex w-full justify-center cursor-default!">
+    <div class="group relative flex w-full cursor-default! justify-center">
       {#if player.streamInfo}
         <div
           class="absolute top-0 right-0 left-0 z-10 flex flex-col gap-0.5 px-4 py-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -219,6 +233,21 @@
         </div>
       {/if}
 
+      <div class:hidden={!!player.streamInfo} class="relative mb-3 flex">
+        <div class="absolute inset-0 flex items-center justify-center">
+          {#if streamStatus === StreamStatus.STARTING}
+            <div class="absolute rounded-2xl bg-[var(--ypb-play-200)]">
+              <StartingPane />
+            </div>
+          {/if}
+
+          <div class="absolute z-10 rounded-2xl bg-[var(--ypb-play-200)]">
+            {#key welcomeKey}
+              <WelcomePane hiding={streamStatus !== StreamStatus.IDLE} />
+            {/key}
+          </div>
+        </div>
+      </div>
       {#if explorer.isRewinding}
         <div
           class="absolute inset-0 z-20 flex items-center justify-center rounded-lg bg-black/40"
@@ -273,6 +302,12 @@
           onTogglePlayPause={() => player.togglePlayPause()}
         />
       {/if}
+    </div>
+  {/if}
+
+  {#if streamStatus === StreamStatus.IDLE && !hasLoadedStream}
+    <div class="fixed bottom-4 flex w-full gap-4 text-sm text-muted-foreground">
+      <span>Version YYYY.MM.DD</span>
     </div>
   {/if}
 </main>

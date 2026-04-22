@@ -100,8 +100,8 @@ type Config struct {
 	StartDelay int
 	// Stream start (in hours ago).
 	StreamStart int
-	// Stdout callback to simulate yt-dlp progress.
-	OnStdout func([]byte)
+	// Print callback to simulate yt-dlp progress.
+	OnPrint func([]byte)
 }
 
 type Stream struct {
@@ -119,8 +119,8 @@ func NewStream(ctx context.Context, cfg Config) (*Stream, error) {
 	for _, line := range progressLines {
 		select {
 		case <-time.After(interval):
-			if cfg.OnStdout != nil {
-				cfg.OnStdout([]byte(line + "\n"))
+			if cfg.OnPrint != nil {
+				cfg.OnPrint([]byte(line + "\n"))
 			}
 		case <-ctx.Done():
 			log.Println("stream start cancelled")

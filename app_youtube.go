@@ -9,9 +9,9 @@ import (
 	"github.com/xymaxim/ypb/stream"
 )
 
-func newStream(ctx context.Context, videoID string, port int, onYtdlpStdout func([]byte)) (stream.Streamer, error) {
+func newStream(ctx context.Context, videoID string, port int, onPrint func([]byte)) (stream.Streamer, error) {
 	log.Printf("running new stream on port %d type=youtube v=%s", port, videoID)
 	return stream.NewStream(ctx, videoID, port, &stream.StreamConfig{
-		OnYtdlpStdout: onYtdlpStdout,
+		OnPrint: onPrint,
 	})
 }

@@ -41,11 +41,11 @@ func (a *App) StartStream(videoID string) error {
 	startCtx, cancel := context.WithCancel(a.ctx)
 	a.startCancel = cancel
 
-	onStdout := func(b []byte) {
+	onYpbPrint := func(b []byte) {
 		runtime.EventsEmit(a.ctx, "stream-stdout", string(b))
 	}
 
-	s, err := newStream(startCtx, videoID, playbackPort, onStdout)
+	s, err := newStream(startCtx, videoID, playbackPort, onYpbPrint)
 	if err != nil {
 		a.stream = nil
 		a.startCancel()
@@ -55,7 +55,8 @@ func (a *App) StartStream(videoID string) error {
 	a.stream = s
 
 	go func() {
-		if err := s.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+		err := s.Start()
+		if err != nil && !errors.Is(err, http.ErrServerClosed) {
 			log.Printf("error running stream: %v", err)
 		}
 	}()

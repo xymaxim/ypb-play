@@ -205,7 +205,7 @@
   />
 
   <div
-    class="flex min-h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg
+    class="flex h-[362px] w-full min-w-[640px] cursor-default justify-center rounded-lg
               {streamStatus === StreamStatus.IDLE ||
     streamStatus === StreamStatus.STARTING
       ? 'bg-gradient-to-t from-neutral-200 to-transparent to-80%'

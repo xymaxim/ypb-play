@@ -299,7 +299,7 @@
           <Select.Trigger class="w-full">
             {pendingOffsetValue}
           </Select.Trigger>
-          <Select.Content class="max-h-72">
+          <Select.Content class="max-h-72 z-1000">
             {#each UTC_OFFSETS as offset}
               <Select.Item value={offset.value} label={offset.label}>
                 <span class="tabular-nums">{offset.label}</span>

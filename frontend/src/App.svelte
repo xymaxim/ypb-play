@@ -236,7 +236,9 @@
       <div class:hidden={!!player.streamInfo} class="relative mb-3 flex">
         <div class="absolute inset-0 flex items-center justify-center">
           {#if streamStatus === StreamStatus.STARTING}
-            <div class="absolute rounded-2xl bg-[var(--ypb-play-200)]">
+            <div
+              class="pointer-events-none absolute rounded-2xl bg-[var(--ypb-play-200)]"
+            >
               <StartingPane />
             </div>
           {/if}

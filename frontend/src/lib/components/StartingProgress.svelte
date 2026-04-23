@@ -53,7 +53,7 @@
         {#if stdout}
           <div
             bind:this={element}
-            class="mt-3 max-h-36 overflow-y-auto rounded-md bg-neutral-200 p-2 font-mono text-sm leading-tight whitespace-pre-wrap text-muted-foreground"
+            class="mt-3 max-h-36 overflow-y-auto rounded-md p-2 font-mono text-sm leading-tight whitespace-pre-wrap text-muted-foreground"
           >
             {stdout}
           </div>

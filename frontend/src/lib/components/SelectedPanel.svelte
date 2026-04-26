@@ -130,7 +130,7 @@
         </Button>
       {/snippet}
     </DropdownMenu.Trigger>
-    <DropdownMenu.Content class="z-100">
+    <DropdownMenu.Content class="z-1000">
       <DropdownMenu.Item
         class="cursor-pointer"
         disabled={explorer.selectedTime === null}

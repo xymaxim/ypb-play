@@ -85,7 +85,7 @@
   <div class="absolute inset-0 overflow-hidden">
     <div
       bind:this={wordsEl}
-      class="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-0 text-[4rem] font-light tracking-tighter text-foreground"
+      class="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center gap-0 text-[3.75rem] font-light tracking-tighter text-foreground"
       style="--flying-duration: {collapseDuration}ms"
     >
       <TiltProvider

@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import type { PanneauProps, AnyResolved } from "./types";
+  import type { AnyResolved } from "./types";
   import { randBetween } from "./utils";
+  import { ellipsePositions } from "./positions";
 
   interface Props {
     primitives: PrimitiveDescriptor[];
+    angle?: number;
     width?: number;
     height?: number;
     cy?: number;
@@ -16,11 +18,13 @@
     collapsingDuration?: number;
     playing?: boolean;
     playSpeed?: number;
+    getPositions?: PositionFn;
     class?: string;
   }
 
   let {
     primitives,
+    angle: propAngle = 0,
     width = 640,
     height = 360,
     cy: propCy,
@@ -32,52 +36,70 @@
     collapsingDuration = 600,
     playing = false,
     playSpeed = 0.01,
+    getPositions = ellipsePositions,
     class: className = "",
   }: Props = $props();
+
+  // Types
+  export type PositionParams = {
+    n: number;
+    cx: number;
+    cy: number;
+    rx: number;
+    ry: number;
+    nudges: number[];
+    angle: number;
+  };
+
+  export type PositionFn = (
+    params: PositionParams,
+  ) => { x: number; y: number }[];
 
   // State
   let seed = $state(propSeed);
   let ready = $state(false);
-  let angle = $state(0);
+  let angle = $state(propAngle);
 
   // Derived
   const cx = $derived(width / 2);
   const cy = $derived(propCy ?? height / 2);
   const rx = $derived(propRx ?? width * 0.4);
+  const ry = $derived(rx / aspect);
 
-  const nudgeOffsets = $derived.by(() => {
+  const { nudgeOffsets, rotationSpeeds } = $derived.by(() => {
     seed;
-    return primitives.map(() => randBetween(nudge));
+    const rotationSpeedRange: Range = [-3, 3];
+    return {
+      nudgeOffsets: primitives.map(() => randBetween(nudge)),
+      rotationSpeeds: primitives.map(() => {
+        let value = Math.floor(randBetween(rotationSpeedRange));
+        while (value === 0) value = Math.floor(randBetween(rotationSpeedRange));
+        return value;
+      }),
+    };
   });
 
-  const playPositions = $derived(
-    getPositions(primitives.length, cx, cy, rx, aspect, nudgeOffsets, angle),
-  );
+  const positionParams = $derived<PositionParams>({
+    n: primitives.length,
+    cx,
+    cy,
+    rx,
+    ry,
+    nudges: nudgeOffsets,
+    angle,
+  });
+
+  const computedPositions = $derived(getPositions(positionParams));
 
   const positions = $derived(
     !ready || collapsed
       ? primitives.map(() => ({ x: cx, y: cy }))
-      : playPositions,
+      : computedPositions,
   );
 
-  const rotationSpeedRange = [-3, 3];
-  const rotationSpeeds = $derived.by(() => {
-    seed;
-    return primitives.map(() => {
-      let value = Math.floor(randBetween(rotationSpeedRange));
-      while (value === 0) {
-        value = Math.floor(randBetween(rotationSpeedRange));
-      }
-      return value;
-    });
-  });
-
-  const rotations = $derived.by(() => {
-    angle;
-    return primitives.map((_, i) => {
-      return angle * rotationSpeeds[i];
-    });
-  });
+  const rotations = $derived(
+    primitives.map((_, i) => angle * rotationSpeeds[i]),
+  );
 
   const resolved = $derived.by(() => {
     seed;
@@ -86,38 +108,17 @@
     );
   });
 
-  function getPositions(
-    n: number,
-    cx: number,
-    cy: number,
-    rx: number,
-    aspect: number,
-    nudges: number[],
-    angleOffset = 0,
-  ): { x: number; y: number }[] {
-    if (n === 0) return [];
-
-    const ry = rx / aspect;
-    const maxTan = playing ? 2 : 0.8;
-
-    return Array.from({ length: n }, (_, i) => {
-      const angle = ((2 * Math.PI) / n) * i - Math.PI / 1 + angleOffset;
-      const tanValue = Math.max(-maxTan, Math.min(maxTan, Math.tan(angle)));
-      return {
-        x: cx + (rx + nudges[i]) * tanValue,
-        y: cy + (ry + nudges[i]) * Math.sin(angle),
-      };
-    });
-  }
+  // Effects
+  $effect(() => {
+    if (!playing) angle = propAngle;
+  });
 
   onMount(() => {
     requestAnimationFrame(() => (ready = true));
 
     let animationFrameId: number;
     const animate = () => {
-      if (playing && !collapsed) {
-        angle += playSpeed;
-      }
+      if (playing && !collapsed) angle += playSpeed;
       animationFrameId = requestAnimationFrame(animate);
     };
     animate();
@@ -127,7 +128,7 @@
 </script>
 
 <div
-  class="block overflow-hidden {className}"
+  class="block {className}"
   style:width="{width}px"
   style:height="{height}px"
 >
@@ -135,7 +136,7 @@
     {width}
     {height}
     viewBox="0 0 {width} {height}"
-    class="block"
+    class="overflow-none block"
     style="--collapsing-duration: {collapsingDuration}ms;"
     xmlns="http://www.w3.org/2000/svg"
     aria-hidden="true"

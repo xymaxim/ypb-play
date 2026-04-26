@@ -15,6 +15,10 @@
     resolveBead,
     resolveEmpty,
   } from "$lib/components/panneau/resolvers";
+  import {
+    ellipsePositions,
+    tanPositions,
+  } from "$lib/components/panneau/positions";
 
   interface Props {
     collapsing: boolean;
@@ -114,15 +118,19 @@
 </script>
 
 <AnimatedPanneau
+  class="overflow-visible!"
   {primitives}
   width={640}
   height={342}
-  rx={225}
+  rx={250}
   aspect={16 / 9}
   nudge={[-10, 0]}
   {seed}
+  getPositions={playing
+    ? (params) => tanPositions({ ...params, maxTan: 2.0 })
+    : ellipsePositions}
   collapsed={collapsing}
   {collapsingDuration}
   {playing}
-  playSpeed={0.01}
+  playSpeed={0.02}
 />

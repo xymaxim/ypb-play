@@ -12,42 +12,6 @@ Available on Linux, macOS, and Windows.
 
 ## Overview
 
-```mermaid
----
-config:
-  flowchart:
-    defaultRenderer: elk
-  theme: base
-  layout: dagre
-  look: neo
-  themeVariables:
-    dropShadow: false
----
-flowchart LR
- subgraph Rewyt["`**Rewyt app**`"]
-    direction TB
-        A["Frontend<br>(Svelte + Shaka Player)"]
-        B["Backend<br>(Go, Wails)"]
-  end
- subgraph CoreTools["Stream proxy"]
-    direction TB
-        C["`**ypb**<br>Start proxy server<br>Generate MPDs`"]
-        D["`**yt-dlp**<br>Fetch metadata<br>Solve JS challenges`"]
-  end
-    B -- Rewind<br>moments --> C
-    C --> D
-    D --> YT{{"`**YouTube**`"}}
-    C -- Locate<br>segments --> YT
-    A <== Stream<br>video ==> C
-    C ==> YT
-
-     A:::app
-     B:::app
-     YT:::yt
-    classDef app stroke:#222,stroke-dasharray: 3 3,stroke-width:3px,fill:none
-    classDef yt stroke:#ff0033,stroke-dasharray: 3 3,stroke-width:3px,fill:none
-```
-
 The app is built on a Go backend with a Svelte frontend. It uses our
 **[ypb](https://github.com/xymaxim/ypb)** to locate moments in a live stream and
 generate dynamic MPEG-DASH manifests. A proxy layer delivers media segments and

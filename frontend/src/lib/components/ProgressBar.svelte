@@ -93,7 +93,7 @@
           [&_[role=slider]]:cursor-ew-resize
           [&_[role=slider]]:border-4
           [&_[role=slider]]:border-[#06b6d4]
-          [&_[role=slider]]:bg-[var(--ypb-selected-light)]"
+          [&_[role=slider]]:bg-[var(--rewyt-selected-light)]"
     />
   </div>
 </div>

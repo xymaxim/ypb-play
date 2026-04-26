@@ -135,7 +135,7 @@
           <span class="text-xs">{formatOffset(explorer.timezoneOffset)}</span>
           {#if isPlayheadOutOfView}
             <span
-              class="absolute top-0 right-0 left-0 mx-auto h-7 w-7 items-center rounded-full bg-[var(--ypb-play-200)] p-0.5 ring-2 ring-[var(--background)]"
+              class="absolute top-0 right-0 left-0 mx-auto h-7 w-7 items-center rounded-full bg-[var(--rewyt-play-200)] p-0.5 ring-2 ring-[var(--background)]"
             >
               <ArrowUpRight class="h-full w-full text-foreground" />
             </span>
@@ -151,7 +151,7 @@
         title={isPlaying ? "Pause" : "Play"}
         variant="ghost"
         size="icon"
-        class="p-0! {isPlaying ? '!bg-[var(--ypb-play-light)]' : ''}"
+        class="p-0! {isPlaying ? '!bg-[var(--rewyt-play-light)]' : ''}"
         onclick={onTogglePlayPause}
       >
         {#if isPlaying}<Pause class="size-4.5" />{:else}<Play
@@ -201,7 +201,7 @@
     <Button
       title="Go to live"
       variant="ghost"
-      class="hover:bg-transparent hover:text-[var(--ypb-play)]"
+      class="hover:bg-transparent hover:text-[var(--rewyt-play)]"
       onclick={onRewindToLive}><Radio /></Button
     >
 
@@ -330,7 +330,7 @@
   }
 
   .play-toolbar :global(button[data-slot="button"]) {
-    @apply h-8 w-10 rounded-full bg-neutral-200 hover:bg-[var(--ypb-play-light)]/50;
+    @apply h-8 w-10 rounded-full bg-neutral-200 hover:bg-[var(--rewyt-play-light)]/50;
   }
 
   .play-toolbar__group {

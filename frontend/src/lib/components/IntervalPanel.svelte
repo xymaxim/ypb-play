@@ -125,7 +125,7 @@
   <Button
     title={isPlayingInterval ? "Stop" : "Loop interval"}
     class="selection-toolbar__item--button"
-    style="--item-bg: var(--ypb-interval-light)"
+    style="--item-bg: var(--rewyt-interval-light)"
     variant="ghost"
     disabled={markA === null || markB === null}
     onclick={toggleInterval}
@@ -143,7 +143,7 @@
           size="sm"
           disabled={markA === null || markB === null}
           class="selection-toolbar__item--button-narrow"
-          style="--item-bg: var(--ypb-interval-light)"
+          style="--item-bg: var(--rewyt-interval-light)"
         >
           <EllipsisVertical />
         </Button>

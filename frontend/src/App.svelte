@@ -237,13 +237,13 @@
         <div class="absolute inset-0 flex items-center justify-center">
           {#if streamStatus === StreamStatus.STARTING}
             <div
-              class="pointer-events-none absolute rounded-2xl bg-[var(--ypb-play-200)]"
+              class="pointer-events-none absolute rounded-2xl bg-[var(--rewyt-play-200)]"
             >
               <StartingPane />
             </div>
           {/if}
 
-          <div class="absolute z-10 rounded-2xl bg-[var(--ypb-play-200)]">
+          <div class="absolute z-10 rounded-2xl bg-[var(--rewyt-play-200)]">
             {#key welcomeKey}
               <WelcomePane hiding={streamStatus !== StreamStatus.IDLE} />
             {/key}

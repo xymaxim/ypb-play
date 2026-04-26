@@ -1,4 +1,4 @@
-module ypb-play
+module rewyt
 
 go 1.25.5
 

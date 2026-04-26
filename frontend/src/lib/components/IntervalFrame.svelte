@@ -104,20 +104,20 @@
       class="absolute flex h-full w-full"
       style="
                border-radius: {borderRadius};
-               border-top: 0px solid var(--ypb-interval);
-               border-bottom: 0px solid var(--ypb-interval);
+               border-top: 0px solid var(--rewyt-interval);
+               border-bottom: 0px solid var(--rewyt-interval);
                border-left: {frame.borderLeft
         ? '4px'
-        : '0'} solid var(--ypb-interval);
+        : '0'} solid var(--rewyt-interval);
                border-right: {frame.borderRight
         ? '4px'
-        : '0'} solid var(--ypb-interval);
+        : '0'} solid var(--rewyt-interval);
                mask-image: {maskImage};
                "
     >
       <div
         class="pointer-events-none absolute inline-flex h-full w-full rounded-[8px]"
-        style="background: var(--ypb-interval); opacity: 0.2;"
+        style="background: var(--rewyt-interval); opacity: 0.2;"
       ></div>
     </div>
   </div>

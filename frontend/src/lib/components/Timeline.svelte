@@ -323,7 +323,7 @@
         {#if !rewindDisabled}
           <button
             type="button"
-            class="pointer-events-auto absolute top-[50px]! z-110 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-[var(--ypb-selected-light)] text-black shadow-md transition-opacity hover:opacity-90 focus-visible:outline-hidden"
+            class="pointer-events-auto absolute top-[50px]! z-110 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-selected-light)] text-black shadow-md transition-opacity hover:opacity-90 focus-visible:outline-hidden"
             style="left: {selectedTimePx}px; inset-block: 0; margin-block: auto; transform: translateX(-50%);"
             onclick={(e) => {
               e.stopPropagation();
@@ -342,7 +342,7 @@
 
         <TimelineNeedle
           px={selectedTimePx}
-          color="var(--ypb-selected)"
+          color="var(--rewyt-selected)"
           style="z-index: 100;"
         />
       {/if}
@@ -350,12 +350,12 @@
       <div
         bind:this={playheadEl}
         class="needle-play pointer-events-none absolute top-0 bottom-0 z-100 w-[3px] rounded-full"
-        style="left: 0; background: var(--ypb-play); will-change: transform;"
+        style="left: 0; background: var(--rewyt-play); will-change: transform;"
       ></div>
 
       <div
         bind:this={hoverLabelEl}
-        class="pointer-events-none absolute z-100 rounded-md bg-[var(--ypb-selected-light)] px-1.5 text-sm font-semibold tabular-nums"
+        class="pointer-events-none absolute z-100 rounded-md bg-[var(--rewyt-selected-light)] px-1.5 text-sm font-semibold tabular-nums"
         style="display: none; transform: translate(-50%, -50%); margin-top: -8px;"
       ></div>
     </div>

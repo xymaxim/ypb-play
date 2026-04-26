@@ -83,7 +83,7 @@
 </div>
 
 <div class="selection-toolbar__row">
-  <div class="selection-toolbar__item bg-[var(--ypb-selected-light)]">
+  <div class="selection-toolbar__item bg-[var(--rewyt-selected-light)]">
     <div class="flex flex-row items-center gap-1">
       <Button
         title="Jump back"
@@ -124,7 +124,7 @@
           title="More"
           variant="ghost"
           class="selection-toolbar__item--button-narrow"
-          style="--item-bg: var(--ypb-selected-light)"
+          style="--item-bg: var(--rewyt-selected-light)"
         >
           <EllipsisVertical />
         </Button>

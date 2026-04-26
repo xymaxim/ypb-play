@@ -8,7 +8,7 @@ import (
 
 	"github.com/xymaxim/ypb/stream"
 
-	"ypb-play/local"
+	"rewyt/local"
 )
 
 func newStream(ctx context.Context, videoID string, port int, onPrint func([]byte)) (stream.Streamer, error) {

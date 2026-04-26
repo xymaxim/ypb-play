@@ -46,46 +46,46 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --ypb-play-50: oklch(0.96 0.02 22);
-  --ypb-play-100: oklch(0.93 0.04 20);
-  --ypb-play-200: oklch(0.89 0.06 21);
-  --ypb-play-300: oklch(0.85 0.08 21);
-  --ypb-play-400: oklch(0.82 0.1 20);
-  --ypb-play-500: oklch(0.78 0.13 20);
-  --ypb-play-600: oklch(0.75 0.15 20);
-  --ypb-play-700: oklch(0.72 0.17 19);
-  --ypb-play-800: oklch(0.69 0.2 19);
-  --ypb-play-900: oklch(0.66 0.23 19);
-  --ypb-play-950: oklch(0.64 0.25 18);
+  --rewyt-play-50: oklch(0.96 0.02 22);
+  --rewyt-play-100: oklch(0.93 0.04 20);
+  --rewyt-play-200: oklch(0.89 0.06 21);
+  --rewyt-play-300: oklch(0.85 0.08 21);
+  --rewyt-play-400: oklch(0.82 0.1 20);
+  --rewyt-play-500: oklch(0.78 0.13 20);
+  --rewyt-play-600: oklch(0.75 0.15 20);
+  --rewyt-play-700: oklch(0.72 0.17 19);
+  --rewyt-play-800: oklch(0.69 0.2 19);
+  --rewyt-play-900: oklch(0.66 0.23 19);
+  --rewyt-play-950: oklch(0.64 0.25 18);
 
-  --ypb-selected-50: oklch(0.98 0.02 154);
-  --ypb-selected-100: oklch(0.96 0.03 157);
-  --ypb-selected-200: oklch(0.94 0.05 155);
-  --ypb-selected-300: oklch(0.93 0.06 156);
-  --ypb-selected-400: oklch(0.91 0.08 156);
-  --ypb-selected-500: oklch(0.89 0.1 156);
-  --ypb-selected-600: oklch(0.87 0.11 156);
-  --ypb-selected-700: oklch(0.85 0.13 156);
-  --ypb-selected-800: oklch(0.83 0.14 156);
-  --ypb-selected-900: oklch(0.82 0.16 156);
-  --ypb-selected-950: oklch(0.8 0.17 156);
+  --rewyt-selected-50: oklch(0.98 0.02 154);
+  --rewyt-selected-100: oklch(0.96 0.03 157);
+  --rewyt-selected-200: oklch(0.94 0.05 155);
+  --rewyt-selected-300: oklch(0.93 0.06 156);
+  --rewyt-selected-400: oklch(0.91 0.08 156);
+  --rewyt-selected-500: oklch(0.89 0.1 156);
+  --rewyt-selected-600: oklch(0.87 0.11 156);
+  --rewyt-selected-700: oklch(0.85 0.13 156);
+  --rewyt-selected-800: oklch(0.83 0.14 156);
+  --rewyt-selected-900: oklch(0.82 0.16 156);
+  --rewyt-selected-950: oklch(0.8 0.17 156);
 
-  --ypb-interval-50: oklch(0.95 0.03 308);
-  --ypb-interval-100: oklch(0.85 0.07 307);
-  --ypb-interval-200: oklch(0.76 0.12 306);
-  --ypb-interval-300: oklch(0.66 0.17 304);
-  --ypb-interval-400: oklch(0.55 0.23 301);
-  --ypb-interval-500: oklch(0.51 0.24 299);
-  --ypb-interval-600: oklch(0.44 0.21 299);
+  --rewyt-interval-50: oklch(0.95 0.03 308);
+  --rewyt-interval-100: oklch(0.85 0.07 307);
+  --rewyt-interval-200: oklch(0.76 0.12 306);
+  --rewyt-interval-300: oklch(0.66 0.17 304);
+  --rewyt-interval-400: oklch(0.55 0.23 301);
+  --rewyt-interval-500: oklch(0.51 0.24 299);
+  --rewyt-interval-600: oklch(0.44 0.21 299);
 
-  --ypb-play: var(--ypb-play-800);
-  --ypb-play-light: color-mix(in oklch, var(--ypb-play), white 30%);
+  --rewyt-play: var(--rewyt-play-800);
+  --rewyt-play-light: color-mix(in oklch, var(--rewyt-play), white 30%);
 
-  --ypb-selected: var(--ypb-selected-950);
-  --ypb-selected-light: var(--ypb-selected-500);
+  --rewyt-selected: var(--rewyt-selected-950);
+  --rewyt-selected-light: var(--rewyt-selected-500);
 
-  --ypb-interval: var(--ypb-interval-300);
-  --ypb-interval-light: var(--ypb-interval-100);
+  --rewyt-interval: var(--rewyt-interval-300);
+  --rewyt-interval-light: var(--rewyt-interval-100);
 }
 
 .dark {

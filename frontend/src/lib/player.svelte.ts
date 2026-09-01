@@ -47,17 +47,6 @@ function skipInitSegments(e: { data?: any }) {
   });
 }
 
-export const DEFAULT_SEEK_MARGIN = 5;
-
-export function getSeekMargin(dashPlayer: MediaPlayerClass | null): number {
-  if (!dashPlayer) return DEFAULT_SEEK_MARGIN;
-  const repr = dashPlayer.getCurrentRepresentationForType("video");
-  const segmentDuration = repr?.fragmentDuration ?? repr?.segmentDuration;
-  return segmentDuration && segmentDuration > 0
-    ? segmentDuration
-    : DEFAULT_SEEK_MARGIN;
-}
-
 export function clampSeekTarget(
   target: number,
   dashPlayer: MediaPlayerClass | null,
@@ -66,7 +55,8 @@ export function clampSeekTarget(
   if (!dashPlayer || !dvrWindow) return Math.max(0, target);
   return Math.min(
     Math.max(0, target),
-    dvrWindow.end - getSeekMargin(dashPlayer),
+    // No margin here: liveDelay already keeps seeks off the live edge.
+    dvrWindow.end,
   );
 }
 

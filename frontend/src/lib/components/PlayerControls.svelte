@@ -18,7 +18,7 @@
     type Representation,
   } from "dashjs";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
-  import { clampSeekTarget, getSeekMargin } from "$lib/player.svelte";
+  import { clampSeekTarget } from "$lib/player.svelte";
   import ActionButton from "./ActionButton.svelte";
 
   interface Props {
@@ -41,7 +41,6 @@
   let bufferedPercent = $state(0);
   let seekValue = $state(0);
   let dragging = $state(false);
-  let seekMargin = $state(5);
 
   // Volume state
   let isMuted = $state(true);
@@ -105,8 +104,6 @@
     const d = dashPlayer.duration();
     if (Number.isFinite(d) && d > 0) duration = d;
     else if (videoEl.seekable.length > 0) duration = videoEl.seekable.end(0);
-
-    seekMargin = getSeekMargin(dashPlayer);
 
     const buffer =
       dashPlayer.getDashMetrics()?.getCurrentBufferLevel("video") ?? 0;
@@ -315,7 +312,7 @@
       type="single"
       bind:value={seekValue}
       min={0}
-      max={Math.max(duration - seekMargin, 0)}
+      max={duration}
       step={0.1}
       onpointerdown={() => (dragging = true)}
       onValueCommit={(v) => onSeekCommit(v)}

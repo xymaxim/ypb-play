@@ -114,7 +114,7 @@
 <div bind:this={barEl} class="relative h-9 w-full select-none">
   {#each dayLabels as { day, label }}
     <span
-      class="pointer-events-none absolute z-10 overflow-visible! text-xs font-medium whitespace-nowrap text-muted-foreground"
+      class="pointer-events-none absolute z-40 overflow-visible! text-xs font-medium whitespace-nowrap text-muted-foreground"
       style="left: {toPixel(
         day.dayStart + 12 * MS_PER_HOUR,
       )}px; top: 50%; transform: translate(-50%, -50%);"

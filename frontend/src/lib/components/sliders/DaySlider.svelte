@@ -133,7 +133,7 @@
 <div bind:this={barEl} class="relative h-9 w-full select-none">
   {#each hourTicks as tick}
     <span
-      class="pointer-events-none absolute z-10 text-xs font-medium whitespace-nowrap text-muted-foreground"
+      class="pointer-events-none absolute z-40 text-xs font-medium whitespace-nowrap text-muted-foreground"
       style="left: {tick.px}px; top: 50%; transform: translate(-50%, -50%);"
     >
       {tick.label}

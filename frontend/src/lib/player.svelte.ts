@@ -19,14 +19,22 @@ const playbackPort = await GetPlaybackPort();
 const dashSettings = {
   streaming: {
     delay: {
+      // Use liveDelay setting instead
       useSuggestedPresentationDelay: false,
-      liveDelay: 604800, // 7 days
+      // Stay behind live edge
+      liveDelay: 10,
     },
     liveCatchup: {
+      // Don't auto-speed-up to chase live edge
       enabled: false,
     },
     utcSynchronization: {
+      // Our manifests have reliable timestamps already
       enabled: false,
+    },
+    timeShiftBuffer: {
+      // Avoids DVR window drift between manifest refreshes
+      calcFromSegmentTimeline: true,
     },
   },
 };
@@ -54,7 +62,7 @@ export function clampSeekTarget(
 ): number {
   if (!dashPlayer || !dvrWindow) return Math.max(0, target);
   return Math.min(
-    Math.max(0, target),
+    Math.max(dvrWindow.start, target),
     // No margin here: liveDelay already keeps seeks off the live edge.
     dvrWindow.end,
   );
@@ -145,7 +153,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
 
     const url = buildMpdUrl("now");
     await fetchManifestMetadata(url);
-    dashPlayer.initialize(videoEl, url, true);
+    dashPlayer.initialize(videoEl, url, true, 0);
 
     animFrameId = requestAnimationFrame(tick);
     videoEl.addEventListener("timeupdate", onTimeUpdate);
@@ -164,7 +172,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     dashPlayer.reset();
     dashPlayer.updateSettings(dashSettings);
     dashPlayer.attachView(videoEl);
-    dashPlayer.attachSource(uri);
+    dashPlayer.attachSource(uri, 0);
   }
 
   // Playback controls
@@ -226,26 +234,26 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
 
   function seekTo(time: number, pause = false) {
     const videoEl = getVideoEl();
-    if (!videoEl || !mpdStartTime) return;
-    dashPlayer.seek((time - mpdStartTime.getTime()) / 1000);
+    if (!videoEl || !mpdStartTime || !dashPlayer) return;
+    dashPlayer.seekToPresentationTime((time - mpdStartTime.getTime()) / 1000);
     if (pause) videoEl.pause();
   }
 
   async function replay() {
     const videoEl = getVideoEl();
-    if (!videoEl) return;
-    dashPlayer.seek(0);
+    if (!videoEl || !dashPlayer) return;
+    dashPlayer.seekToPresentationTime(0);
     videoEl.play();
   }
 
   function step(seconds: number) {
     const videoEl = getVideoEl();
-    if (!videoEl) return;
-    dashPlayer.seek(
+    if (!videoEl || !dashPlayer) return;
+    dashPlayer.seekToPresentationTime(
       clampSeekTarget(
         videoEl.currentTime + seconds,
         dashPlayer,
-        dashPlayer?.getDvrWindow() ?? null,
+        dashPlayer.getDvrWindow() ?? null,
       ),
     );
   }

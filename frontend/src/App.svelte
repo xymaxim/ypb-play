@@ -248,12 +248,13 @@
         >
           <a
             href="https://www.youtube.com/watch?v={player.streamInfo.id}"
-            class="text-md leading-tight text-white font-bold hover:text-neutral-200"
+            class="text-md leading-tight font-bold text-white hover:text-neutral-200"
             target="_blank"
-            rel="noopener noreferrer">{player.streamInfo.title}</a>
+            rel="noopener noreferrer">{player.streamInfo.title}</a
+          >
           <a
             href="https://youtube.com/channel/{player.streamInfo.channelId}"
-            class="text-sm text-neutral-100 font-medium hover:text-neutral-200"
+            class="text-sm font-medium text-neutral-100 hover:text-neutral-200"
             target="_blank"
             rel="noopener noreferrer">{player.streamInfo.channelTitle}</a
           >
@@ -303,8 +304,7 @@
           dashPlayer={player.dashPlayer}
           onTogglePlayPause={() => player.togglePlayPause()}
           onScreenshot={() =>
-            handleScreenshot(player.playheadTime?.getTime() ?? Date.now())
-          }
+            handleScreenshot(player.playheadTime?.getTime() ?? Date.now())}
         />
       </div>
     </div>

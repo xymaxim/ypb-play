@@ -29,7 +29,9 @@
   </div>
   <span class="text-xl font-semibold">Oops! Rewind failed</span>
   <p class="text-left text-base">Try rewinding again or choose another time.</p>
-  <p class="max-h-50 overflow-y-auto text-left text-sm [overflow-wrap:anywhere]">
+  <p
+    class="max-h-50 overflow-y-auto text-left text-sm [overflow-wrap:anywhere]"
+  >
     <span class="text-sm">Error:</span>
     {error}
   </p>

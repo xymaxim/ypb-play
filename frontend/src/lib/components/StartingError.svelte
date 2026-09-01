@@ -48,10 +48,13 @@
   <Alert.Description
     class="mt-2 max-h-[calc(100vh-32rem)] overflow-y-auto text-sm text-primary"
   >
-    <p class="text-sm [overflow-wrap:anywhere]"><span class="font-semibold">Error:</span> {message}</p>
+    <p class="text-sm [overflow-wrap:anywhere]">
+      <span class="font-semibold">Error:</span>
+      {message}
+    </p>
     {#if stdout}
       <span class="font-semibold">Output:</span>
-      <p class="whitespace-pre-wrap [overflow-wrap:anywhere]">{stdout}</p>
+      <p class="[overflow-wrap:anywhere] whitespace-pre-wrap">{stdout}</p>
     {/if}
   </Alert.Description>
 </Alert.Root>

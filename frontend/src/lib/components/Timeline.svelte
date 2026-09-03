@@ -153,7 +153,7 @@
 
   function onPointerMove(e: PointerEvent) {
     if (!timelineEl) return;
-    if (explorer.isSliding) {
+    if (explorer.isSliding || explorer.isIntervalDragging) {
       hoverPx = null;
       return;
     }
@@ -188,7 +188,7 @@
   }
 
   $effect(() => {
-    if (explorer.isSliding) hoverPx = null;
+    if (explorer.isSliding || explorer.isIntervalDragging) hoverPx = null;
   });
 </script>
 
@@ -236,7 +236,7 @@
 
     {#each ticks as tick}
       <div
-        class="absolute z-30 {isAvailable(tick.ts)
+        class="pointer-events-none absolute z-30 {isAvailable(tick.ts)
           ? 'bg-black/30'
           : 'bg-transparent'}"
         style="left: {tick.px}px; height: {tick.major ? 10 : 6}px; width: 1px;"
@@ -281,7 +281,7 @@
       >
         <span>Click above or slide</span>
         <span
-          class="inline-flex size-5 items-center rounded-full bg-[var(--rewyt-selected-light)]"
+          class="inline-flex size-5 items-center rounded-full bg-[var(--rewyt-selected-light)] shadow-xs"
         ></span>
         <span>to rewind</span>
       </div>

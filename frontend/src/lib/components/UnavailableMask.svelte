@@ -38,7 +38,7 @@
 
 <div
   bind:this={size.el}
-  class="absolute inset-0 z-30 {className}"
+  class="pointer-events-none absolute inset-0 z-10 {className}"
   aria-hidden="true"
 >
   {#if leftWidth}
@@ -63,6 +63,7 @@
 
   .unavailable-mask {
     background-color: #c0c0c0;
+    pointer-events: auto;
   }
 
   .unavailable-mask--left {

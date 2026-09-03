@@ -39,6 +39,20 @@ const dashSettings = {
   },
 };
 
+function createDashPlayer(): MediaPlayerClass {
+  const player = MediaPlayer().create();
+  player.updateSettings(dashSettings);
+  player.on(MediaPlayer.events.ERROR, (e) =>
+    console.error("dash.js error:", e.error),
+  );
+  player.on(MediaPlayer.events.MANIFEST_LOADED, skipInitSegments);
+    player.on(MediaPlayer.events.MANIFEST_LOADED, backdateAvailabilityStart);
+    player.on(MediaPlayer.events.PLAYBACK_SEEKED, () => {
+    console.log("[seeked] currentTime:", player.time(), "segment index:", player.getCurrentRepresentationForType("video")?.index);
+    });
+    return player;
+}
+
 // Our media segments are self-initializing, so skip separate init fetch.
 function skipInitSegments(e: { data?: any }) {
   const manifest = e.data;
@@ -55,12 +69,23 @@ function skipInitSegments(e: { data?: any }) {
   });
 }
 
+// Shift availability window backward to enable initial seeking.
+function backdateAvailabilityStart(e: { data?: any }) {
+  const maxSegmentDuration = 5;
+  const manifest = e.data;
+  if (!manifest?.availabilityStartTime) return;
+  const before = manifest.availabilityStartTime;
+  manifest.availabilityStartTime = new Date(
+    manifest.availabilityStartTime.getTime() - maxSegmentDuration * 1000,
+  );
+}
+
 export function clampSeekTarget(
-  target: number,
-  dashPlayer: MediaPlayerClass | null,
-  dvrWindow: DvrWindow | null,
+    target: number,
+    dashPlayer: MediaPlayerClass | null,
+    dvrWindow: DvrWindow | null,
 ): number {
-  if (!dashPlayer || !dvrWindow) return Math.max(0, target);
+    if (!dashPlayer || !dvrWindow) return Math.max(0, target);
   return Math.min(
     Math.max(dvrWindow.start, target),
     // No margin here: liveDelay already keeps seeks off the live edge.
@@ -71,6 +96,7 @@ export function clampSeekTarget(
 export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
   let dashPlayer: MediaPlayerClass | null = null;
   let animFrameId: number;
+  let initialSeekTime = 0;
 
   // State
   let isRewinding = $state(false);
@@ -125,7 +151,13 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     const json = await response.json();
     if (!json?.metadata) throw new Error("Invalid MPD response");
 
-    mpdStartTime = new Date(json.metadata.startActualTime);
+    const startActualTime = new Date(json.metadata.startActualTime);
+    const startTargetTime = new Date(json.metadata.startTargetTime);
+    mpdStartTime = startActualTime;
+    initialSeekTime = Math.max(
+      0,
+      (startTargetTime.getTime() - startActualTime.getTime()) / 1000,
+    );
     isMpdLoaded = true;
   }
 
@@ -144,16 +176,13 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     const videoEl = getVideoEl();
     if (!videoEl) return;
 
-    dashPlayer = MediaPlayer().create();
-    dashPlayer.updateSettings(dashSettings);
-    dashPlayer.on(MediaPlayer.events.ERROR, (e) =>
-      console.error("dash.js error:", e.error),
-    );
-    dashPlayer.on(MediaPlayer.events.MANIFEST_LOADED, skipInitSegments);
-
     const url = buildMpdUrl("now");
     await fetchManifestMetadata(url);
-    dashPlayer.initialize(videoEl, url, true, 0);
+    dashPlayer = createDashPlayer();
+    attachWithStartTime(
+      () => dashPlayer!.initialize(videoEl, url, true, initialSeekTime),
+      dashSettings.streaming.delay.liveDelay,
+    );
 
     animFrameId = requestAnimationFrame(tick);
     videoEl.addEventListener("timeupdate", onTimeUpdate);
@@ -166,13 +195,59 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     dashPlayer = null;
   }
 
-  function loadManifest(uri: string): Promise<boolean> {
+  function loadManifest(
+    uri: string,
+    startTime = 0,
+    autoPlay = true,
+  ): Promise<void> {
     const videoEl = getVideoEl();
-    if (!dashPlayer || !videoEl) return;
-    dashPlayer.reset();
-    dashPlayer.updateSettings(dashSettings);
-    dashPlayer.attachView(videoEl);
-    dashPlayer.attachSource(uri, 0);
+    if (!videoEl) return Promise.resolve();
+
+    return new Promise<void>((resolve) => {
+      dashPlayer?.destroy();
+      dashPlayer = null;
+
+      // dash.js's destroy()/reset() don't await the browser's async release
+      // of the previous MediaSource, so attaching immediately after races it.
+      // Wait for the video element's own "emptied" event, which fires once
+      // it has genuinely let go, before attaching the new source.
+      videoEl.addEventListener(
+        "emptied",
+        async () => {
+          dashPlayer = createDashPlayer();
+          await attachWithStartTime(
+            () => dashPlayer!.initialize(videoEl, uri, autoPlay, startTime),
+            dashSettings.streaming.delay.liveDelay,
+          );
+          resolve();
+        },
+        { once: true },
+      );
+      videoEl.removeAttribute("src");
+      videoEl.load();
+    });
+  }
+
+  function attachWithStartTime(
+    attach: () => void,
+    restoreLiveDelay: number,
+  ): Promise<void> {
+    return new Promise((resolve) => {
+      if (!dashPlayer) {
+        resolve();
+        return;
+      }
+      dashPlayer.updateSettings({ streaming: { delay: { liveDelay: 0.001 } } });
+      const onInitialized = () => {
+        dashPlayer?.updateSettings({
+          streaming: { delay: { liveDelay: restoreLiveDelay } },
+        });
+        dashPlayer?.off(MediaPlayer.events.STREAM_INITIALIZED, onInitialized);
+        resolve();
+      };
+      dashPlayer.on(MediaPlayer.events.STREAM_INITIALIZED, onInitialized);
+      attach();
+    });
   }
 
   // Playback controls
@@ -187,8 +262,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     try {
       const url = buildMpdUrl(isoTime);
       await fetchManifestMetadata(url);
-      loadManifest(url);
-      if (videoEl) pause ? videoEl.pause() : videoEl.play();
+      await loadManifest(url, initialSeekTime, !pause);
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -212,10 +286,8 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     try {
       const url = buildMpdUrl("now");
       await fetchManifestMetadata(url);
-      loadManifest(url);
+      await loadManifest(url, initialSeekTime, !pause);
       lastRewindTarget = mpdStartTime?.getTime() ?? null;
-      const videoEl = getVideoEl();
-      if (videoEl) pause ? videoEl.pause() : videoEl.play();
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);

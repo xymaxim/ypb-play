@@ -91,7 +91,7 @@
     </div>
     <span
       title="Jump to A"
-      class="text-timestamp cursor-pointer whitespace-nowrap"
+      class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
       onclick={() => seekOrRewind(markA!)}
     >
       {formatDateTime(markA, explorer.timezoneOffset, false)}
@@ -110,7 +110,7 @@
     </div>
     <span
       title="Jump to B"
-      class="text-timestamp cursor-pointer whitespace-nowrap"
+      class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
       onclick={() => seekOrRewind(markB!)}
     >
       {sameDay

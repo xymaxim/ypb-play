@@ -157,7 +157,7 @@
       class="pointer-events-auto relative flex h-full w-full touch-none items-center"
     >
       <Slider.Track
-        class="relative h-full w-full overflow-hidden rounded-2xl bg-transparent"
+        class="relative h-full w-full cursor-pointer overflow-hidden rounded-2xl bg-transparent"
       >
         <Slider.Range class="absolute h-full bg-transparent" />
       </Slider.Track>

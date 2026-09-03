@@ -95,7 +95,7 @@
     class="group flex cursor-pointer flex-row"
     onclick={() => seekOrRewind(explorer.selectedTime!)}
   >
-    <span class="text-timestamp text-muted-foreground!">
+    <span class="text-timestamp text-muted-foreground! tabular-nums">
       {formatDateTime(explorer.selectedTime!, explorer.timezoneOffset, false)}
     </span>
   </div>

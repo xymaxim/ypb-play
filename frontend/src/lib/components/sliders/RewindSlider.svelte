@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { Slider } from "bits-ui";
-  import { Redo } from "lucide-svelte";
+  import { Redo, Undo } from "lucide-svelte";
   import { getExplorerContext } from "$lib/explorer.svelte";
   import { snapTime, formatHoverTime } from "$lib/utils/timelineUtils";
   import { useTimeSlider } from "$lib/components/sliders/useTimeSlider.svelte";
@@ -84,6 +84,8 @@
     formatHoverTime(snappedValue, spanMs, explorer.timezoneOffset),
   );
   const isLabelFlipped = $derived(thumbPercent > 85);
+
+  const isBehindPlayhead = $derived(slider.sliderValue < explorer.playheadTime);
 
   const isActive = $derived(
     (explorer.isSliding && explorer.selectedTime !== null) ||
@@ -224,7 +226,11 @@
                 explorer.pauseAfterRewind,
               )}
           >
-            <Redo class="text-black" size={18} />
+            {#if isBehindPlayhead}
+              <Undo class="text-black" size={18} />
+            {:else}
+              <Redo class="text-black" size={18} />
+            {/if}
           </div>
         {/if}
 

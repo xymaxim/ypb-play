@@ -377,7 +377,7 @@
               </Button>
             </Expandable.Trigger>
             <Expandable.Content>
-              <div class="flex h-9 items-center bg-neutral-200/0 px-2">
+              <div class="flex h-9 items-center bg-neutral-200/0">
                 <TimelineZoomControl />
               </div>
             </Expandable.Content>

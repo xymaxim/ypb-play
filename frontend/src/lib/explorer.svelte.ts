@@ -47,6 +47,7 @@ export function createExplorer(
   });
 
   let isSliding = $state(false);
+  let isIntervalDragging = $state(false);
 
   // Derived
   const depthMs = depthHours * MS_PER_HOUR;
@@ -194,6 +195,10 @@ export function createExplorer(
     isSliding = v;
   }
 
+  function setIsIntervalDragging(v: boolean): void {
+    isIntervalDragging = v;
+  }
+
   // Marks
   function clearAllMarks(): void {
     marks = { ...marks, A: null, B: null, activeTarget: "A" };
@@ -250,6 +255,9 @@ export function createExplorer(
     get isSliding() {
       return isSliding;
     },
+    get isIntervalDragging() {
+      return isIntervalDragging;
+    },
 
     get marks() {
       return marks;
@@ -276,6 +284,7 @@ export function createExplorer(
     setPlayheadTime,
     setMpdStartTime,
     setIsSliding,
+    setIsIntervalDragging,
     clearAllMarks,
     assignMark,
     getInterval,

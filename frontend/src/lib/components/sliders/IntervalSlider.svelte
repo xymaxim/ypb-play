@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import { getExplorerContext } from "$lib/explorer.svelte";
   import { useElementSize } from "$lib/hooks/useElementSize.svelte";
   import { pixelToTime } from "$lib/utils/timePixelUtils";
@@ -63,45 +62,11 @@
 
   let dragging = $state<"A" | "B" | null>(null);
 
-  function getThumbHitArea(
-    mark: "A" | "B",
-  ): { left: number; right: number } | null {
-    if (!fill) return null;
-    if (mark === "A" && fill.left !== null) {
-      return { left: fill.left - thumbSize, right: fill.left };
-    }
-    if (mark === "B" && fill.right !== null) {
-      return { left: fill.right, right: fill.right + thumbSize };
-    }
-    return null;
-  }
-
-  function onPointerDown(e: PointerEvent) {
-    // container.el.releasePointerCapture(e.pointerId);
-
+  function onThumbPointerDown(e: PointerEvent, mark: "A" | "B") {
     if (!container.el || !vr) return;
-    const rect = container.el.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-
-    if (isAVisible) {
-      const hit = getThumbHitArea("A");
-      if (hit && x >= hit.left && x <= hit.right) {
-        dragging = "A";
-        explorer.setIsSliding(false);
-        container.el.setPointerCapture(e.pointerId);
-        return;
-      }
-    }
-
-    if (isBVisible) {
-      const hit = getThumbHitArea("B");
-      if (hit && x >= hit.left && x <= hit.right) {
-        dragging = "B";
-        explorer.setIsSliding(false);
-        container.el.setPointerCapture(e.pointerId);
-        return;
-      }
-    }
+    dragging = mark;
+    explorer.setIsIntervalDragging(true);
+    container.el.setPointerCapture(e.pointerId);
   }
 
   function onPointerUp(e: PointerEvent) {
@@ -114,6 +79,7 @@
       window.addEventListener("click", blockClick, true);
     }
     dragging = null;
+    explorer.setIsIntervalDragging(false);
     explorer.setIsSliding(false);
   }
 
@@ -130,19 +96,11 @@
 
     explorer.assignMark(dragging, clamped);
   }
-
-  onMount(() => {
-    const handler = () => {
-      dragging = null;
-      explorer.setIsSliding(false);
-    };
-  });
 </script>
 
 <div
   bind:this={container.el}
-  class="pointer-events-auto absolute inset-0 z-10 h-full touch-none"
-  onpointerdown={onPointerDown}
+  class="pointer-events-none absolute inset-0 z-20 h-full touch-none"
   onpointermove={onPointerMove}
   onpointerup={onPointerUp}
 >
@@ -150,7 +108,7 @@
     <!-- Interval fill -->
     {#if fill.left !== null && fill.right !== null}
       <div
-        class="absolute top-1/2 -translate-y-1/2 rounded-xl"
+        class="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-xl"
         style="
           left: {fill.left + 1}px;
           width: {fill.right - fill.left - 2}px;
@@ -163,7 +121,7 @@
     <!-- Edge line -->
     {#if isAVisible && fill.left !== null}
       <div
-        class="absolute top-0 bottom-0 flex -translate-x-px"
+        class="pointer-events-none absolute top-0 bottom-0 flex -translate-x-px"
         style="left: {fill.left}px; height: {thumbSize}px"
       >
         <div
@@ -182,7 +140,7 @@
     {/if}
     {#if isBVisible && fill.right !== null}
       <div
-        class="absolute top-0 bottom-0 flex -translate-x-px"
+        class="pointer-events-none absolute top-0 bottom-0 flex -translate-x-px"
         style="left: {fill.right}px; height: {thumbSize}px"
       >
         <div
@@ -205,7 +163,8 @@
     <!-- A thumb -->
     {#if isAVisible && fill.left !== null}
       <div
-        class="absolute top-1/2 flex -translate-y-1/2 cursor-ew-resize rounded-full"
+        class="pointer-events-auto absolute top-1/2 flex -translate-y-1/2 cursor-ew-resize rounded-full shadow-sm"
+        onpointerdown={(e) => onThumbPointerDown(e, "A")}
         style="
                    left: {fill.left - thumbSize - 1}px;
                    width: {thumbSize}px;
@@ -224,7 +183,8 @@
     <!-- B thumb -->
     {#if isBVisible && fill.right !== null}
       <div
-        class="absolute top-1/2 flex -translate-y-1/2 cursor-ew-resize rounded-full"
+        class="pointer-events-auto absolute top-1/2 flex -translate-y-1/2 cursor-ew-resize rounded-full"
+        onpointerdown={(e) => onThumbPointerDown(e, "B")}
         style="
           left: {fill.right + 1}px;
           width: {thumbSize}px;

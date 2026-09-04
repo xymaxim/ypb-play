@@ -113,6 +113,22 @@ export function formatDateTime(
   return includeOffset ? `${date}, ${time} ${offset}` : `${date}, ${time}`;
 }
 
+export function formatIntervalDuration(ms: number): string {
+  const total = Math.floor(ms / 1000);
+  const days = Math.floor(total / 86_400);
+  const hours = Math.floor((total % 86_400) / 3_600);
+  const minutes = Math.floor((total % 3_600) / 60);
+  const seconds = total % 60;
+
+  const parts: string[] = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0) parts.push(`${hours}h`);
+  if (minutes > 0) parts.push(`${minutes}m`);
+  if (seconds > 0) parts.push(`${seconds}s`);
+
+  return parts.length > 0 ? parts.join("") : "0s";
+}
+
 export function formatISOString(ts: number, offsetMinutes: number): string {
   const shifted = new Date(ts + offsetMinutes * 60_000);
   const sign = offsetMinutes >= 0 ? "+" : "-";

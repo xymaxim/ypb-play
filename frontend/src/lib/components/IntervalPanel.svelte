@@ -97,7 +97,7 @@
   {#if markA !== null}
     <div
       title="View A"
-      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 text-sm font-semibold hover:bg-[var(--rewyt-interval-100)]/80"
+      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)]/50 text-sm font-semibold hover:bg-[var(--color-interval-100)]/80"
       onclick={() => goTo(markA!)}
     >
       A
@@ -118,7 +118,7 @@
   {#if markB !== null}
     <div
       title="View B"
-      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 text-sm font-semibold hover:bg-[var(--rewyt-interval-100)]/80"
+      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)]/50 text-sm font-semibold hover:bg-[var(--color-interval-100)]/80"
       onclick={() => goTo(markB!)}
     >
       B
@@ -151,7 +151,7 @@
   <Button
     title={isPlayingInterval ? "Stop" : "Loop interval"}
     class="selection-toolbar__item--button"
-    style="--item-bg: var(--rewyt-interval-light)"
+    style="--item-bg: var(--color-interval-light)"
     variant="ghost"
     disabled={markA === null || markB === null}
     onclick={toggleInterval}
@@ -169,7 +169,7 @@
           size="sm"
           disabled={markA === null || markB === null}
           class="selection-toolbar__item--button-narrow"
-          style="--item-bg: var(--rewyt-interval-light)"
+          style="--item-bg: var(--color-interval-light)"
         >
           <EllipsisVertical />
         </Button>

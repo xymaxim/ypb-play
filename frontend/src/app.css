@@ -46,53 +46,53 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
-  --rewyt-play-50: oklch(0.96 0.02 22);
-  --rewyt-play-100: oklch(0.93 0.04 20);
-  --rewyt-play-200: oklch(0.89 0.06 21);
-  --rewyt-play-300: oklch(0.85 0.08 21);
-  --rewyt-play-400: oklch(0.82 0.1 20);
-  --rewyt-play-500: oklch(0.78 0.13 20);
-  --rewyt-play-600: oklch(0.75 0.15 20);
-  --rewyt-play-700: oklch(0.72 0.17 19);
-  --rewyt-play-800: oklch(0.69 0.2 19);
-  --rewyt-play-900: oklch(0.66 0.23 19);
-  --rewyt-play-950: oklch(0.64 0.25 18);
+  --color-play-50: oklch(0.96 0.02 22);
+  --color-play-100: oklch(0.93 0.04 20);
+  --color-play-200: oklch(0.89 0.06 21);
+  --color-play-300: oklch(0.85 0.08 21);
+  --color-play-400: oklch(0.82 0.1 20);
+  --color-play-500: oklch(0.78 0.13 20);
+  --color-play-600: oklch(0.75 0.15 20);
+  --color-play-700: oklch(0.72 0.17 19);
+  --color-play-800: oklch(0.69 0.2 19);
+  --color-play-900: oklch(0.66 0.23 19);
+  --color-play-950: oklch(0.64 0.25 18);
 
-  --rewyt-selected-50: oklch(0.98 0.02 154);
-  --rewyt-selected-100: oklch(0.96 0.03 157);
-  --rewyt-selected-200: oklch(0.94 0.05 155);
-  --rewyt-selected-300: oklch(0.93 0.06 156);
-  --rewyt-selected-400: oklch(0.91 0.08 156);
-  --rewyt-selected-500: oklch(0.89 0.1 156);
-  --rewyt-selected-600: oklch(0.87 0.11 156);
-  --rewyt-selected-700: oklch(0.85 0.13 156);
-  --rewyt-selected-800: oklch(0.83 0.14 156);
-  --rewyt-selected-900: oklch(0.82 0.16 156);
-  --rewyt-selected-950: oklch(0.8 0.17 156);
+  --color-play: var(--color-play-800);
+  --color-play-light: color-mix(in oklch, var(--color-play), white 30%);
 
-  --rewyt-interval-50: oklch(0.95 0.03 308);
-  --rewyt-interval-100: oklch(0.85 0.07 307);
-  --rewyt-interval-200: oklch(0.76 0.12 306);
-  --rewyt-interval-300: oklch(0.66 0.17 304);
-  --rewyt-interval-400: oklch(0.55 0.23 301);
-  --rewyt-interval-500: oklch(0.51 0.24 299);
-  --rewyt-interval-600: oklch(0.44 0.21 299);
+  --color-selected-50: oklch(0.98 0.02 154);
+  --color-selected-100: oklch(0.96 0.03 157);
+  --color-selected-200: oklch(0.94 0.05 155);
+  --color-selected-300: oklch(0.93 0.06 156);
+  --color-selected-400: oklch(0.91 0.08 156);
+  --color-selected-500: oklch(0.89 0.1 156);
+  --color-selected-600: oklch(0.87 0.11 156);
+  --color-selected-700: oklch(0.85 0.13 156);
+  --color-selected-800: oklch(0.83 0.14 156);
+  --color-selected-900: oklch(0.82 0.16 156);
+  --color-selected-950: oklch(0.8 0.17 156);
 
-  --rewyt-play: var(--rewyt-play-800);
-  --rewyt-play-light: color-mix(in oklch, var(--rewyt-play), white 30%);
+  --color-selected: #d0e758;
+  --color-selected-light: #d2eb89;
+  --color-selected-lighter: #ddf0a3;
+  --color-selected-lightest: #ecf6cb;
+  --color-selected-dark: #aadb24;
+  --color-selected-darker: #8cb41d;
+  --color-selected-darkest: #6d8c17;
 
-  --rewyt-selected: #d0e758;
-  --rewyt-selected-light: #d2eb89;
-  --rewyt-selected-lighter: #ddf0a3;
-  --rewyt-selected-lightest: #ecf6cb;
-  --rewyt-selected-dark: #aadb24;
-  --rewyt-selected-darker: #8cb41d;
-  --rewyt-selected-darkest: #6d8c17;
+  --color-selecting: oklch(0.8 0.147 84);
 
-  --rewyt-selecting: oklch(0.8 0.147 84);
-
-  --rewyt-interval: var(--rewyt-interval-300);
-  --rewyt-interval-light: var(--rewyt-interval-100);
+  --color-interval-50: oklch(0.95 0.03 308);
+  --color-interval-100: oklch(0.85 0.07 307);
+  --color-interval-200: oklch(0.76 0.12 306);
+  --color-interval-300: oklch(0.66 0.17 304);
+  --color-interval-400: oklch(0.55 0.23 301);
+  --color-interval-500: oklch(0.51 0.24 299);
+  --color-interval-600: oklch(0.44 0.21 299);
+ 
+  --color-interval: var(--color-interval-300);
+  --color-interval-light: var(--color-interval-100);
 }
 
 .dark {
@@ -166,7 +166,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --color-view: var(--rewyt-selected);
+  --color-view: var(--color-selected);
 }
 
 @keyframes shimmer {
@@ -246,9 +246,9 @@ button[data-state="off"]:hover {
 @keyframes pulse-play {
   0%,
   100% {
-    background-color: var(--rewyt-play-700);
+    background-color: var(--color-play-700);
   }
   50% {
-    background-color: var(--rewyt-play-950);
+    background-color: var(--color-play-950);
   }
 }

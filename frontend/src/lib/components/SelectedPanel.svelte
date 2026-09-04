@@ -103,7 +103,7 @@
 
 <div class="selection-toolbar__row overflow-hidden">
   <div
-    class="selection-toolbar__item flex grid overflow-hidden bg-[var(--rewyt-selected-light)] transition-all! duration-600 ease-in-out"
+    class="selection-toolbar__item flex grid overflow-hidden bg-[var(--color-selected-light)] transition-all! duration-600 ease-in-out"
   >
     <div
       class="flex flex-row items-center gap-1 overflow-hidden transition-all"
@@ -135,7 +135,7 @@
         <Expandable.Trigger
           class="flex h-8 {context.open
             ? 'w-9 -rotate-30'
-            : 'min-w-9'} items-center justify-center rounded-full border-none bg-[var(--rewyt-selected-dark)]! px-2 text-xs font-medium hover:bg-accent"
+            : 'min-w-9'} items-center justify-center rounded-full border-none bg-[var(--color-selected-dark)]! px-2 text-xs font-medium hover:bg-accent"
         >
           {#if !context.open}
             {getStepLabel()}
@@ -185,7 +185,7 @@
           title="More"
           variant="ghost"
           class="selection-toolbar__item--button-narrow"
-          style="--item-bg: var(--rewyt-selected-light)"
+          style="--item-bg: var(--color-selected-light)"
         >
           <EllipsisVertical />
         </Button>

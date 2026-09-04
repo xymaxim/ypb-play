@@ -185,13 +185,13 @@
   >
     <defs>
       <linearGradient id="rewind-gradient" x1="0%" y1="50%" x2="100%" y2="50%">
-        <stop offset="0%" stop-color="var(--rewyt-selecting)" />
-        <stop offset="50%" stop-color="var(--rewyt-selected)" />
+        <stop offset="0%" stop-color="var(--color-selecting)" />
+        <stop offset="50%" stop-color="var(--color-selected)" />
       </linearGradient>
     </defs>
 
     {#snippet selectedCircle()}
-      <circle r={40} fill="var(--rewyt-selecting)" />
+      <circle r={40} fill="var(--color-selecting)" />
       <circle r={3.2} fill="oklch(0 0 0)" />
     {/snippet}
 
@@ -225,12 +225,12 @@
     {/snippet}
 
     {#snippet playCircle()}
-      <circle r={15} fill="var(--rewyt-play)" />
+      <circle r={15} fill="var(--color-play)" />
       <circle r={2.25} fill="oklch(0 0 0)" />
     {/snippet}
 
     {#snippet highlightCircle()}
-      <circle r={20} fill="var(--rewyt-interval-light)" />
+      <circle r={20} fill="var(--color-interval-light)" />
     {/snippet}
 
     {#snippet highlightBar()}
@@ -239,7 +239,7 @@
         y={-35}
         width={10.5}
         height={70}
-        fill="var(--rewyt-interval-light)"
+        fill="var(--color-interval-light)"
       />
     {/snippet}
 

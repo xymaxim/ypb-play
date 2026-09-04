@@ -205,7 +205,7 @@
           </div>
         {:else if explorer.isSliding}
           <div
-            class="flex size-10 items-center justify-center rounded-full bg-[var(--rewyt-selected-light)]"
+            class="flex size-10 items-center justify-center rounded-full bg-[var(--color-selected-light)]"
           >
             {#if explorer.selectedTime <= explorer.playheadTime}
               <Rewind strokeWidth={2} />
@@ -244,7 +244,7 @@
           </span>
           {#if isPlayheadOutOfView}
             <span
-              class="absolute top-1/2 left-1/2 flex size-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--rewyt-play-200)] p-0.5 ring-2 ring-[var(--background)]"
+              class="absolute top-1/2 left-1/2 flex size-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-play-200)] p-0.5 ring-2 ring-[var(--background)]"
             >
               <ArrowUpRight strokeWidth={2} class="text-foreground" />
             </span>
@@ -260,7 +260,7 @@
     <div class="flex h-10 items-center gap-0 gap-1!">
       <Button
         title="Jump to time"
-        class="text-normal main-bar__button bg-[var(--rewyt-selected-light)]"
+        class="text-normal main-bar__button bg-[var(--color-selected-light)]"
         onclick={openJumpToTimeDialog}
       >
         <Pen size={20} />
@@ -274,7 +274,7 @@
         <Expandable.Trigger class="gap-0! transition-none">
           <div
             title="Mark interval"
-            class="main-bar__trigger-button bg-[var(--rewyt-interval-200)]/50! text-sm font-bold tracking-tighter transition-all {context.open
+            class="main-bar__trigger-button bg-[var(--color-interval-200)]/50! text-sm font-bold tracking-tighter transition-all {context.open
               ? ' -rotate-30 opacity-50'
               : ''}"
           >
@@ -293,7 +293,7 @@
               title="Mark A"
               variant="ghost"
               size="icon"
-              class="flex size-9 rounded-full bg-[var(--rewyt-interval-200)]/50! text-sm font-semibold"
+              class="flex size-9 rounded-full bg-[var(--color-interval-200)]/50! text-sm font-semibold"
               onclick={() => {
                 if (explorer.playheadTime !== null)
                   explorer.assignMark("A", explorer.playheadTime);
@@ -305,7 +305,7 @@
               title="Mark B"
               variant="ghost"
               size="icon"
-              class="flex size-9 rounded-full bg-[var(--rewyt-interval-200)]/50! text-sm font-semibold"
+              class="flex size-9 rounded-full bg-[var(--color-interval-200)]/50! text-sm font-semibold"
               onclick={() => {
                 if (explorer.playheadTime !== null)
                   explorer.assignMark("B", explorer.playheadTime);

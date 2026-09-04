@@ -80,11 +80,11 @@
     if (intervalFrame === null) return "";
     switch (intervalFrame.kind) {
       case "closed":
-        return "color-mix(in srgb, var(--rewyt-interval-light) 50%, transparent)";
+        return "color-mix(in srgb, var(--color-interval-light) 50%, transparent)";
       case "open-right":
-        return "linear-gradient(to right, var(--rewyt-interval-light), transparent)";
+        return "linear-gradient(to right, var(--color-interval-light), transparent)";
       case "open-left":
-        return "linear-gradient(to left, var(--rewyt-interval-light), transparent)";
+        return "linear-gradient(to left, var(--color-interval-light), transparent)";
     }
   });
 
@@ -128,7 +128,7 @@
   {#if playheadPx !== null}
     <div
       class="pointer-events-none absolute bottom-0 z-20 size-[0.5rem] -translate-x-1/2 rounded-full"
-      style="left: {playheadPx}px; background: var(--rewyt-play);"
+      style="left: {playheadPx}px; background: var(--color-play);"
     ></div>
   {/if}
 </div>

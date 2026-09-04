@@ -50,7 +50,7 @@
         value="selected"
         class="relative left-[-15px] z-11 flex items-center justify-center font-bold tracking-tight"
       >
-        <div class="size-8! rounded-full bg-[var(--rewyt-selected)]">
+        <div class="size-8! rounded-full bg-[var(--color-selected)]">
           <div
             class="absolute bottom-1/2 left-1/2 z-10 size-0.75 -translate-x-1/2 translate-y-1/2 rounded-full bg-black"
           />
@@ -66,10 +66,10 @@
       >
         <div class="flex -rotate-30">
           <div
-            class="size-5! rounded-full bg-[var(--rewyt-interval-100)]"
+            class="size-5! rounded-full bg-[var(--color-interval-100)]"
           ></div>
           <div
-            class="size-5! rounded-l-full bg-gradient-to-r from-[var(--rewyt-interval-100)]"
+            class="size-5! rounded-l-full bg-gradient-to-r from-[var(--color-interval-100)]"
           ></div>
         </div>
       </Tabs.Trigger>

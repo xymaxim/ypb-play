@@ -3,7 +3,7 @@
 </script>
 
 <div
-  class="relative flex h-full w-full flex-col rounded-2xl bg-[var(--rewyt-selected-lighter)]"
+  class="relative flex h-full w-full flex-col rounded-2xl bg-[var(--color-selected-lighter)]"
 >
   <div class="relative flex h-full w-full items-center justify-center">
     <WelcomePanneau debug={false} />

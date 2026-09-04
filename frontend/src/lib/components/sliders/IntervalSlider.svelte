@@ -8,7 +8,7 @@
     color?: string;
   }
 
-  const { color = "var(--rewyt-interval-200)" }: Props = $props();
+  const { color = "var(--color-interval-200)" }: Props = $props();
 
   const explorer = getExplorerContext();
   const container = useElementSize();
@@ -179,7 +179,7 @@
             left: {fill.left - thumbSize}px;
             width: {thumbSize}px;
             height: {thumbSize}px;
-            background: var(--rewyt-interval-300);
+            background: var(--color-interval-300);
         "
       >
         <div
@@ -199,7 +199,7 @@
             left: {fill.right}px;
             width: {thumbSize}px;
             height: {thumbSize}px;
-            background: var(--rewyt-interval-300);
+            background: var(--color-interval-300);
         "
       >
         <span

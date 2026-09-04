@@ -217,7 +217,7 @@
     <div class="absolute inset-0 overflow-hidden rounded-2xl">
       {#if seekableLeft !== null && seekableRight !== null}
         <div
-          class="pointer-events-none absolute bottom-0 h-[26px] rounded-2xl bg-[var(--rewyt-play-400)]/60"
+          class="pointer-events-none absolute bottom-0 h-[26px] rounded-2xl bg-[var(--color-play-400)]/60"
           style="left: {seekableLeft}px; width: {seekableRight -
             seekableLeft}px;"
         ></div>
@@ -253,7 +253,7 @@
       {#if playheadPx !== null}
         <div
           class="pointer-events-none absolute bottom-0 z-50 size-5! h-full rounded-full"
-          style="left: 0; background: var(--rewyt-play-950); will-change: transform; transform: translateX(calc({playheadPx}px - 50%));"
+          style="left: 0; background: var(--color-play-950); will-change: transform; transform: translateX(calc({playheadPx}px - 50%));"
         >
           <div
             class="absolute bottom-1/2 left-1/2 size-0.75 -translate-x-1/2 translate-y-1/2 rotate-30 rounded-full bg-black"
@@ -281,7 +281,7 @@
       >
         <span>Click above or slide</span>
         <span
-          class="inline-flex size-5 items-center rounded-full bg-[var(--rewyt-selected-light)] shadow-xs"
+          class="inline-flex size-5 items-center rounded-full bg-[var(--color-selected-light)] shadow-xs"
         ></span>
         <span>to rewind</span>
       </div>

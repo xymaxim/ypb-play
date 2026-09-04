@@ -7,7 +7,7 @@
     color?: string;
   }
 
-  const { color = "var(--rewyt-interval-200)" }: Props = $props();
+  const { color = "var(--color-interval-200)" }: Props = $props();
 
   const explorer = getExplorerContext();
   const container = useElementSize();
@@ -62,7 +62,7 @@
   {#if computed !== null}
     {#if computed.left !== null && computed.right !== null}
       <div
-        class="absolute rounded-xl bg-[var(--rewyt-interval-300)]!"
+        class="absolute rounded-xl bg-[var(--color-interval-300)]!"
         style="
           left: calc({computed.left}px);
           width: {computed.right - computed.left}px;

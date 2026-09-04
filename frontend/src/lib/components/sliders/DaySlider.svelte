@@ -177,7 +177,7 @@
       <Slider.Thumb
         index={0}
         class="relative flex size-9 cursor-ew-resize items-center justify-center rounded-full
-               bg-[var(--rewyt-selected)] shadow-sm transition-opacity outline-none
+               bg-[var(--color-selected)] shadow-sm transition-opacity outline-none
                {slider.thumbHidden
           ? 'pointer-events-none opacity-0'
           : 'opacity-100'}"

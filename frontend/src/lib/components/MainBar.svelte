@@ -293,7 +293,7 @@
               title="Mark A"
               variant="ghost"
               size="icon"
-              class="flex size-9 rounded-full bg-[var(--rewyt-interval-200)]/50! text-sm font-bold tracking-wider"
+              class="flex size-9 rounded-full bg-[var(--rewyt-interval-200)]/50! text-sm font-semibold"
               onclick={() => {
                 if (explorer.playheadTime !== null)
                   explorer.assignMark("A", explorer.playheadTime);
@@ -305,7 +305,7 @@
               title="Mark B"
               variant="ghost"
               size="icon"
-              class="flex size-9 rounded-full bg-[var(--rewyt-interval-200)]/50! text-sm font-bold [word-spacing:10px]!"
+              class="flex size-9 rounded-full bg-[var(--rewyt-interval-200)]/50! text-sm font-semibold"
               onclick={() => {
                 if (explorer.playheadTime !== null)
                   explorer.assignMark("B", explorer.playheadTime);

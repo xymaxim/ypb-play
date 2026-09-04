@@ -350,7 +350,7 @@
         <button
           type="button"
           class="pointer-events-auto px-2 py-0.5 text-sm font-semibold transition-colors {isAtLiveEdge
-            ? 'text-[var(--rewyt-play-950)] pointer-events-none'
+            ? 'pointer-events-none text-[var(--rewyt-play-950)]'
             : 'text-neutral-400 hover:text-white'}"
           onclick={() => {
             if (!isAtLiveEdge) onRewindToLive();

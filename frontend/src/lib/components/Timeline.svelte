@@ -214,10 +214,10 @@
     onpointerleave={onPointerLeave}
     onclick={onClick}
   >
-    <div class="absolute inset-0 rounded-2xl overflow-hidden">
+    <div class="absolute inset-0 overflow-hidden rounded-2xl">
       {#if seekableLeft !== null && seekableRight !== null}
         <div
-          class="pointer-events-none absolute bottom-0 rounded-2xl bg-[var(--rewyt-play-400)]/60 h-[26px]"
+          class="pointer-events-none absolute bottom-0 h-[26px] rounded-2xl bg-[var(--rewyt-play-400)]/60"
           style="left: {seekableLeft}px; width: {seekableRight -
             seekableLeft}px;"
         ></div>
@@ -259,7 +259,7 @@
             class="absolute bottom-1/2 left-1/2 size-0.75 -translate-x-1/2 translate-y-1/2 rotate-30 rounded-full bg-black"
           />
           <div
-            class="absolute top-1/2 -translate-y-1/2 whitespace-nowrap h-[26px]"
+            class="absolute top-1/2 h-[26px] -translate-y-1/2 whitespace-nowrap"
             class:left-full={!playheadLabelFlipped}
             class:ml-2={!playheadLabelFlipped}
             class:right-full={playheadLabelFlipped}

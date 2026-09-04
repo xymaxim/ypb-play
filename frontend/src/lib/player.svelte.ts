@@ -81,11 +81,11 @@ function backdateAvailabilityStart(e: { data?: any }) {
 }
 
 export function clampSeekTarget(
-    target: number,
-    dashPlayer: MediaPlayerClass | null,
-    dvrWindow: DvrWindow | null,
+  target: number,
+  dashPlayer: MediaPlayerClass | null,
+  dvrWindow: DvrWindow | null,
 ): number {
-    if (!dashPlayer || !dvrWindow) return Math.max(0, target);
+  if (!dashPlayer || !dvrWindow) return Math.max(0, target);
   return Math.min(
     Math.max(dvrWindow.start, target),
     // No margin here: liveDelay already keeps seeks off the live edge.

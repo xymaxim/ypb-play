@@ -95,10 +95,10 @@
 
 <div class="mr-5 flex items-center gap-2">
   {#if markA !== null}
-      <div
-          title="View A"
-          class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 hover:bg-[var(--rewyt-interval-100)]/80 text-sm font-semibold"
-          onclick={() => goTo(markA!)}
+    <div
+      title="View A"
+      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 text-sm font-semibold hover:bg-[var(--rewyt-interval-100)]/80"
+      onclick={() => goTo(markA!)}
     >
       A
     </div>
@@ -116,10 +116,10 @@
   <span class="text-gray-600">—</span>
 
   {#if markB !== null}
-      <div
-          title="View B"
-          class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 hover:bg-[var(--rewyt-interval-100)]/80  text-sm font-semibold"
-          onclick={() => goTo(markB!)}
+    <div
+      title="View B"
+      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 text-sm font-semibold hover:bg-[var(--rewyt-interval-100)]/80"
+      onclick={() => goTo(markB!)}
     >
       B
     </div>

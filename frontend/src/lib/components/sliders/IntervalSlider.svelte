@@ -114,15 +114,15 @@
   {#if fill !== null && vr !== null && hasEither}
     <!-- Interval fill -->
     {#if fill.left !== null && fill.right !== null}
-        <div
-            class="pointer-events-none absolute top-1/2 -translate-y-1/2 overflow-hidden rounded-xl"
-            style="
+      <div
+        class="pointer-events-none absolute top-1/2 -translate-y-1/2 overflow-hidden rounded-xl"
+        style="
                    left: {fill.left + 1}px;
                    width: {fill.right - fill.left - 2}px;
                    height: {container.height}px;
                    background: {color};
                    "
-        ></div>
+      ></div>
     {/if}
 
     {#if dragging !== null && durationText !== null && fill.left !== null && fill.right !== null && fill.right - fill.left >= 80}
@@ -172,19 +172,19 @@
 
     <!-- A thumb -->
     {#if isAVisible && fill.left !== null}
-        <div
-            class="pointer-events-auto absolute top-1/2 z-50 flex -translate-y-1/2 cursor-ew-resize rounded-full"
-            onpointerdown={(e) => onThumbPointerDown(e, "A")}
-            style="
+      <div
+        class="pointer-events-auto absolute top-1/2 z-50 flex -translate-y-1/2 cursor-ew-resize rounded-full"
+        onpointerdown={(e) => onThumbPointerDown(e, "A")}
+        style="
             left: {fill.left - thumbSize}px;
             width: {thumbSize}px;
             height: {thumbSize}px;
             background: var(--rewyt-interval-300);
         "
       >
-            <div
-                class="flex flex-1 items-center justify-center text-sm font-bold text-neutral-100"
-            >
+        <div
+          class="flex flex-1 items-center justify-center text-sm font-bold text-neutral-100"
+        >
           A
         </div>
       </div>
@@ -192,20 +192,20 @@
 
     <!-- B thumb -->
     {#if isBVisible && fill.right !== null}
-        <div
-            class="pointer-events-auto absolute top-1/2 z-50 flex -translate-y-1/2 cursor-ew-resize rounded-full"
-            onpointerdown={(e) => onThumbPointerDown(e, "B")}
-            style="
+      <div
+        class="pointer-events-auto absolute top-1/2 z-50 flex -translate-y-1/2 cursor-ew-resize rounded-full"
+        onpointerdown={(e) => onThumbPointerDown(e, "B")}
+        style="
             left: {fill.right}px;
             width: {thumbSize}px;
             height: {thumbSize}px;
             background: var(--rewyt-interval-300);
         "
       >
-            <span
-                class="flex flex-1 items-center justify-center text-sm font-bold text-neutral-100"
-            >B</span
-              >
+        <span
+          class="flex flex-1 items-center justify-center text-sm font-bold text-neutral-100"
+          >B</span
+        >
       </div>
     {/if}
   {/if}

@@ -70,6 +70,17 @@
     }
   }
 
+  function goTo(time: number) {
+    explorer.setViewRange(
+      clampViewRange(
+        time,
+        explorer.zoomLevel,
+        explorer.days,
+        explorer.centeredOnMidnight,
+      ),
+    );
+  }
+
   function toggleInterval() {
     if (markA === null || markB === null) return;
     isPlayingInterval ? onStopInterval() : onPlayInterval(markA, markB);
@@ -84,8 +95,10 @@
 
 <div class="mr-5 flex items-center gap-2">
   {#if markA !== null}
-    <div
-      class="flex size-6 items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 text-sm font-semibold"
+      <div
+          title="View A"
+          class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 hover:bg-[var(--rewyt-interval-100)]/80 text-sm font-semibold"
+          onclick={() => goTo(markA!)}
     >
       A
     </div>
@@ -103,8 +116,10 @@
   <span class="text-gray-600">—</span>
 
   {#if markB !== null}
-    <div
-      class="flex size-6 items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 text-sm font-semibold"
+      <div
+          title="View B"
+          class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--rewyt-interval-100)]/50 hover:bg-[var(--rewyt-interval-100)]/80  text-sm font-semibold"
+          onclick={() => goTo(markB!)}
     >
       B
     </div>
@@ -122,6 +137,7 @@
   {/if}
 
   <Button
+    class="rounded-full hover:bg-neutral-300"
     title="Clear interval"
     variant="ghost"
     size="icon-sm"

@@ -103,7 +103,7 @@
       A
     </div>
     <span
-      title="Jump to A"
+      title="Rewind to A"
       class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
       onclick={() => seekOrRewind(markA!)}
     >
@@ -124,7 +124,7 @@
       B
     </div>
     <span
-      title="Jump to B"
+      title="Rewind to B"
       class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
       onclick={() => seekOrRewind(markB!)}
     >

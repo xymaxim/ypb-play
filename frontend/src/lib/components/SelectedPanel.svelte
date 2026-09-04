@@ -91,11 +91,11 @@
 
 <div class="mr-5 flex items-baseline">
   <div
-    title="Jump to selected"
+    title="Rewind to selected"
     class="group flex cursor-pointer flex-row"
     onclick={() => seekOrRewind(explorer.selectedTime!)}
   >
-    <span class="text-timestamp text-muted-foreground! tabular-nums">
+    <span class="text-timestamp tabular-nums">
       {formatDateTime(explorer.selectedTime!, explorer.timezoneOffset, false)}
     </span>
   </div>
@@ -109,7 +109,7 @@
       class="flex flex-row items-center gap-1 overflow-hidden transition-all"
     >
       <Button
-        title="Jump back"
+        title="Rewind back"
         variant="ghost"
         size="icon"
         class="rounded-full"
@@ -118,7 +118,7 @@
         <Undo />
       </Button>
       <Button
-        title="Jump forward"
+        title="Rewind forward"
         variant="ghost"
         size="icon"
         class="rounded-full"

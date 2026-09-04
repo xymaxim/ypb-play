@@ -305,6 +305,8 @@
           onTogglePlayPause={() => player.togglePlayPause()}
           onScreenshot={() =>
             handleScreenshot(player.playheadTime?.getTime() ?? Date.now())}
+          onRewindToLive={() => player.rewindToLive()}
+          isAtLiveEdge={player.isAtLiveEdge}
         />
       </div>
     </div>

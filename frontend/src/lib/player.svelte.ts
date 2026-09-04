@@ -16,13 +16,16 @@ export interface StreamInfo {
 
 const playbackPort = await GetPlaybackPort();
 
+const liveDelay = 10;
+const liveEdgeThreshold = liveDelay + 5;
+
 const dashSettings = {
   streaming: {
     delay: {
       // Use liveDelay setting instead
       useSuggestedPresentationDelay: false,
       // Stay behind live edge
-      liveDelay: 10,
+      liveDelay: liveDelay,
     },
     liveCatchup: {
       // Don't auto-speed-up to chase live edge
@@ -46,11 +49,8 @@ function createDashPlayer(): MediaPlayerClass {
     console.error("dash.js error:", e.error),
   );
   player.on(MediaPlayer.events.MANIFEST_LOADED, skipInitSegments);
-    player.on(MediaPlayer.events.MANIFEST_LOADED, backdateAvailabilityStart);
-    player.on(MediaPlayer.events.PLAYBACK_SEEKED, () => {
-    console.log("[seeked] currentTime:", player.time(), "segment index:", player.getCurrentRepresentationForType("video")?.index);
-    });
-    return player;
+  player.on(MediaPlayer.events.MANIFEST_LOADED, backdateAvailabilityStart);
+  return player;
 }
 
 // Our media segments are self-initializing, so skip separate init fetch.
@@ -109,6 +109,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
   let intervalStopTime = $state<number | null>(null);
   let lastRewindTarget = $state<number | null>(null);
   let rewindError = $state<string | null>(null);
+  let liveEdgeOffsetMs = $state<number | null>(null);
 
   // Playback
   function tick() {
@@ -116,6 +117,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     if (dashPlayer && mpdStartTime && videoEl) {
       const currentMs = mpdStartTime.getTime() + videoEl.currentTime * 1000;
       playheadTime = new Date(currentMs);
+      liveEdgeOffsetMs = Date.now() - currentMs;
 
       if (videoEl.seekable.length > 0) {
         const newStart =
@@ -271,6 +273,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
       mpdStartTime = null;
       playheadTime = null;
       seekableRange = null;
+      liveEdgeOffsetMs = null;
       rewindError = message;
       lastRewindTarget = null; // allow retry
       return false;
@@ -296,6 +299,7 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
       mpdStartTime = null;
       playheadTime = null;
       seekableRange = null;
+      liveEdgeOffsetMs = null;
       rewindError = message;
       lastRewindTarget = null;
       return false;
@@ -401,6 +405,15 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
     },
     get rewindError() {
       return rewindError;
+    },
+    get liveEdgeOffsetMs() {
+      return liveEdgeOffsetMs;
+    },
+    get isAtLiveEdge() {
+      return (
+        liveEdgeOffsetMs !== null &&
+        liveEdgeOffsetMs <= liveEdgeThreshold * 1000
+      );
     },
     get dashPlayer() {
       return dashPlayer;

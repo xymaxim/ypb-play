@@ -25,12 +25,21 @@
     videoEl: HTMLVideoElement | null;
     stageEl: HTMLElement | null;
     dashPlayer: MediaPlayerClass | null;
+    isAtLiveEdge: boolean;
     onTogglePlayPause: () => void;
     onScreenshot: () => void | Promise<void>;
+    onRewindToLive: () => void;
   }
 
-  let { videoEl, stageEl, dashPlayer, onTogglePlayPause, onScreenshot }: Props =
-    $props();
+  let {
+    videoEl,
+    stageEl,
+    dashPlayer,
+    onTogglePlayPause,
+    onScreenshot,
+    onRewindToLive,
+    isAtLiveEdge,
+  }: Props = $props();
 
   // Playback state
   let isPlaying = $state(false);
@@ -334,7 +343,22 @@
     </Slider.Root>
 
     <div class="flex items-center justify-between gap-2 pt-2 pb-2">
-      <span class="text-sm font-medium text-white tabular-nums">{elapsed}</span>
+      <div class="flex items-center gap-2">
+        <span class="text-sm font-medium text-white tabular-nums"
+          >{elapsed}</span
+        >
+        <button
+          type="button"
+          class="pointer-events-auto px-2 py-0.5 text-sm font-semibold transition-colors {isAtLiveEdge
+            ? 'text-[var(--rewyt-play-950)] pointer-events-none'
+            : 'text-neutral-400 hover:text-white'}"
+          onclick={() => {
+            if (!isAtLiveEdge) onRewindToLive();
+          }}
+        >
+          Live
+        </button>
+      </div>
       <div class="flex items-center gap-2">
         <button
           type="button"

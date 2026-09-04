@@ -208,18 +208,18 @@
 
   <div
     bind:this={timelineEl}
-    class="group relative h-12 w-full cursor-pointer rounded-2xl"
+    class="group relative h-[52px] w-full cursor-pointer rounded-2xl"
     style="background: {stripeGradient} {stripeOffsetPx}px 0 / {stripeWidthPx}px 100%;"
     onpointermove={onPointerMove}
     onpointerleave={onPointerLeave}
     onclick={onClick}
   >
-    <div class="absolute inset-0 overflow-hidden rounded-2xl">
+    <div class="absolute inset-0 rounded-2xl overflow-hidden">
       {#if seekableLeft !== null && seekableRight !== null}
         <div
-          class="pointer-events-none absolute top-0 bottom-0 rounded-xl bg-[var(--rewyt-play-300)]/60"
+          class="pointer-events-none absolute bottom-0 rounded-2xl bg-[var(--rewyt-play-400)]/60 h-[26px]"
           style="left: {seekableLeft}px; width: {seekableRight -
-            seekableLeft}px"
+            seekableLeft}px;"
         ></div>
       {/if}
 
@@ -244,7 +244,7 @@
     {/each}
 
     {#if explorer.marks.A || explorer.marks.B}
-      <div class="absolute h-7! w-full">
+      <div class="absolute h-[26px] w-full">
         <IntervalSlider />
       </div>
     {/if}
@@ -259,7 +259,7 @@
             class="absolute bottom-1/2 left-1/2 size-0.75 -translate-x-1/2 translate-y-1/2 rotate-30 rounded-full bg-black"
           />
           <div
-            class="absolute top-1/2 -translate-y-1/2 whitespace-nowrap"
+            class="absolute top-1/2 -translate-y-1/2 whitespace-nowrap h-[26px]"
             class:left-full={!playheadLabelFlipped}
             class:ml-2={!playheadLabelFlipped}
             class:right-full={playheadLabelFlipped}

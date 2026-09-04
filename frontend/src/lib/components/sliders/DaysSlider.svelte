@@ -154,14 +154,8 @@
       }}
       onpointerdown={slider.onPointerDown}
       onpointerup={slider.onPointerUp}
-      class="pointer-events-auto relative flex h-full w-full touch-none items-center"
+      class="pointer-events-auto relative flex h-full w-full cursor-pointer touch-none items-center"
     >
-      <Slider.Track
-        class="relative h-full w-full cursor-pointer overflow-hidden rounded-2xl bg-transparent"
-      >
-        <Slider.Range class="absolute h-full bg-transparent" />
-      </Slider.Track>
-
       <Slider.Thumb
         index={0}
         class="block flex size-9 cursor-ew-resize items-center justify-center rounded-full bg-[var(--rewyt-selected)]! shadow-sm transition-opacity outline-none

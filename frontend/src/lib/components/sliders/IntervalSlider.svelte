@@ -142,38 +142,38 @@
       {#if fill.right - fill.left >= narrowIntervalWidthPx}
         {#if dragging === "A"}
           <div
-            class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-8"
+            class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-6"
             style="left: {fill.left}px;"
           >
             <span
-              class="text-sm leading-none font-medium whitespace-nowrap text-white"
+              class="text-sm leading-none font-medium whitespace-nowrap text-white pt-2"
               >{durationText}</span
             >
           </div>
         {:else if dragging === "B"}
           <div
-            class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-x-full -translate-y-1/2 items-center justify-end pr-8"
+            class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-x-full -translate-y-1/2 items-center justify-end pr-6"
             style="left: {fill.right}px;"
           >
             <span
-              class="text-sm leading-none font-medium whitespace-nowrap text-white"
+              class="text-sm leading-none font-medium whitespace-nowrap text-white pt-2"
               >{durationText}</span
             >
           </div>
         {/if}
       {:else if dragging === "A"}
         <div
-          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-x-full -translate-y-1/2 items-center justify-end pr-2"
+          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-x-full -translate-y-1/2 items-center justify-end pr-3"
           style="left: {fill.left - thumbSize}px;"
         >
           <span
-            class="text-sm leading-none font-medium whitespace-nowrap text-black"
+            class="text-sm leading-none font-medium whitespace-nowrap text-black pt-2"
             >{durationText}</span
           >
         </div>
       {:else if dragging === "B"}
         <div
-          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-2"
+          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-3"
           style="left: {fill.right + thumbSize}px;"
         >
           <span

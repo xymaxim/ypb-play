@@ -1,14 +1,26 @@
 <script lang="ts">
   import { getExplorerContext } from "$lib/explorer.svelte";
   import { useElementSize } from "$lib/hooks/useElementSize.svelte";
-  import { formatIntervalDuration } from "$lib/utils/dateTimeUtils";
+  import {
+    formatDateTime,
+    formatIntervalDuration,
+  } from "$lib/utils/dateTimeUtils";
   import { pixelToTime } from "$lib/utils/timePixelUtils";
+  import { Undo, Redo } from "lucide-svelte";
 
   interface Props {
     color?: string;
+    seekableRange: { start: number; end: number } | null;
+    onSeekTo: (time: number, pause?: boolean) => void;
+    onRewind: (isoTime: string, pause?: boolean) => void | Promise<boolean>;
   }
 
-  const { color = "var(--color-interval-200)" }: Props = $props();
+  const {
+    color = "var(--color-interval-200)",
+    seekableRange,
+    onSeekTo,
+    onRewind,
+  }: Props = $props();
 
   const explorer = getExplorerContext();
   const container = useElementSize();
@@ -61,6 +73,17 @@
 
   const thumbSize = $derived(container.height);
 
+  const showGuideA = $derived(
+    fill !== null && hasA && vr !== null && A !== null && A < vr.start,
+  );
+  const showGuideB = $derived(
+    fill !== null && hasB && vr !== null && B !== null && B > vr.end,
+  );
+
+  function seekOrRewind(time: number) {
+    explorer.seekOrRewind(time, seekableRange, onSeekTo, onRewind);
+  }
+
   const durationText = $derived(
     hasBoth && A !== null && B !== null
       ? formatIntervalDuration(Math.abs(B - A))
@@ -72,6 +95,7 @@
   function onThumbPointerDown(e: PointerEvent, mark: "A" | "B") {
     if (!container.el || !vr) return;
     dragging = mark;
+    explorer.setIsIntervalInteracting(true);
     explorer.setIsIntervalDragging(true);
     container.el.setPointerCapture(e.pointerId);
   }
@@ -86,6 +110,7 @@
       window.addEventListener("click", blockClick, true);
     }
     dragging = null;
+    explorer.setIsIntervalInteracting(false);
     explorer.setIsIntervalDragging(false);
     explorer.setIsSliding(false);
   }
@@ -103,6 +128,16 @@
 
     explorer.assignMark(dragging, clamped);
   }
+
+  const anyThumbVisible = $derived(
+    (isAVisible && fill !== null && fill.left !== null) ||
+      (isBVisible && fill !== null && fill.right !== null),
+  );
+
+  $effect(() => {
+    if (!showGuideA && !showGuideB && !anyThumbVisible)
+      explorer.setIsIntervalInteracting(false);
+  });
 </script>
 
 <div
@@ -123,6 +158,55 @@
                    background: {color};
                    "
       ></div>
+    {/if}
+
+    {#if showGuideA && fill.left !== null && fill.right !== null}
+      <div
+        class="pointer-events-none absolute top-1/2 z-50 flex -translate-y-1/2 items-center gap-0 pl-2"
+        style="left: {fill.left}px;"
+      >
+        <span
+          class="flex size-6 items-center justify-center rounded-full bg-[var(--color-interval-200)] text-sm leading-none font-semibold text-black"
+          >A</span
+        >
+        <button
+          type="button"
+          title="Rewind to A ({formatDateTime(A!, explorer.timezoneOffset, false)})"
+          onpointerenter={() => explorer.setIsIntervalInteracting(true)}
+          onpointerleave={() => explorer.setIsIntervalInteracting(false)}
+          onclick={(e) => {
+            e.stopPropagation();
+            seekOrRewind(A!);
+          }}
+          class="pointer-events-auto flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)] hover:bg-[var(--color-interval-50)]"
+        >
+          <Undo class="size-5 text-black" strokeWidth={2} />
+        </button>
+      </div>
+    {/if}
+    {#if showGuideB && fill.left !== null && fill.right !== null}
+      <div
+        class="pointer-events-none absolute top-1/2 z-50 flex -translate-y-1/2 items-center pr-2"
+        style="right: {container.width - fill.right}px;"
+      >
+        <button
+          type="button"
+          title="Rewind to B ({formatDateTime(B!, explorer.timezoneOffset, false)})"
+          onpointerenter={() => explorer.setIsIntervalInteracting(true)}
+          onpointerleave={() => explorer.setIsIntervalInteracting(false)}
+          onclick={(e) => {
+            e.stopPropagation();
+            seekOrRewind(B!);
+          }}
+          class="pointer-events-auto flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)] hover:bg-[var(--color-interval-50)]"
+        >
+          <Redo class="size-5 text-black" strokeWidth={2} />
+        </button>
+        <span
+          class="flex size-6 items-center justify-center rounded-full bg-[var(--color-interval-200)] text-sm leading-none font-semibold text-black"
+          >B</span
+        >
+      </div>
     {/if}
 
     {#if dragging !== null && durationText !== null && fill.left !== null && fill.right !== null && fill.right - fill.left >= 80}
@@ -173,8 +257,13 @@
     <!-- A thumb -->
     {#if isAVisible && fill.left !== null}
       <div
+        role="slider"
+        tabindex="0"
+        aria-valuenow={A!}
         class="pointer-events-auto absolute top-1/2 z-50 flex -translate-y-1/2 cursor-ew-resize rounded-full"
         onpointerdown={(e) => onThumbPointerDown(e, "A")}
+        onpointerenter={() => explorer.setIsIntervalInteracting(true)}
+        onpointerleave={() => explorer.setIsIntervalInteracting(false)}
         style="
             left: {fill.left - thumbSize}px;
             width: {thumbSize}px;
@@ -193,8 +282,13 @@
     <!-- B thumb -->
     {#if isBVisible && fill.right !== null}
       <div
+        role="slider"
+        tabindex="0"
+        aria-valuenow={B!}
         class="pointer-events-auto absolute top-1/2 z-50 flex -translate-y-1/2 cursor-ew-resize rounded-full"
         onpointerdown={(e) => onThumbPointerDown(e, "B")}
+        onpointerenter={() => explorer.setIsIntervalInteracting(true)}
+        onpointerleave={() => explorer.setIsIntervalInteracting(false)}
         style="
             left: {fill.right}px;
             width: {thumbSize}px;

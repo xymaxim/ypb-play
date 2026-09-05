@@ -48,6 +48,7 @@ export function createExplorer(
 
   let isSliding = $state(false);
   let isIntervalDragging = $state(false);
+  let isIntervalInteracting = $state(false);
 
   // Derived
   const depthMs = depthHours * MS_PER_HOUR;
@@ -176,6 +177,25 @@ export function createExplorer(
     selectedTime = null;
   }
 
+  function seekOrRewind(
+    time: Timestamp,
+    seekableRange: { start: number; end: number } | null,
+    onSeekTo: (time: number, pause?: boolean) => void,
+    onRewind: (isoTime: string, pause?: boolean) => void | Promise<boolean>,
+  ): void {
+    setSelectedTime(time);
+    setViewRange(clampViewRange(time, zoomLevel, days, centeredOnMidnight));
+    if (
+      seekableRange &&
+      time >= seekableRange.start &&
+      time <= seekableRange.end
+    ) {
+      onSeekTo(time, true);
+    } else {
+      onRewind(new Date(time).toISOString(), true);
+    }
+  }
+
   function setPlayheadTime(time: Timestamp | null): void {
     playheadTime = time;
     if (time !== null && viewRange === null) {
@@ -197,6 +217,10 @@ export function createExplorer(
 
   function setIsIntervalDragging(v: boolean): void {
     isIntervalDragging = v;
+  }
+
+  function setIsIntervalInteracting(v: boolean): void {
+    isIntervalInteracting = v;
   }
 
   // Marks
@@ -258,6 +282,9 @@ export function createExplorer(
     get isIntervalDragging() {
       return isIntervalDragging;
     },
+    get isIntervalInteracting() {
+      return isIntervalInteracting;
+    },
 
     get marks() {
       return marks;
@@ -281,10 +308,12 @@ export function createExplorer(
     setCenteredOnMidnight,
     setSelectedTime,
     clearSelectedTime,
+    seekOrRewind,
     setPlayheadTime,
     setMpdStartTime,
     setIsSliding,
     setIsIntervalDragging,
+    setIsIntervalInteracting,
     clearAllMarks,
     assignMark,
     getInterval,

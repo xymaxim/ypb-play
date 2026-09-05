@@ -3,11 +3,11 @@
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import { EllipsisVertical, Repeat, Square, X } from "lucide-svelte";
   import { getExplorerContext } from "../explorer.svelte";
-  import { clampViewRange } from "../utils/timelineUtils";
   import {
     formatTime,
     formatDateTime,
     formatISOString,
+    formatIntervalDuration,
   } from "../utils/dateTimeUtils";
 
   interface Props {
@@ -49,38 +49,6 @@
     );
   }
 
-  function seekOrRewind(time: number) {
-    explorer.setSelectedTime(time);
-    explorer.setViewRange(
-      clampViewRange(
-        time,
-        explorer.zoomLevel,
-        explorer.days,
-        explorer.centeredOnMidnight,
-      ),
-    );
-    if (
-      seekableRange &&
-      time >= seekableRange.start &&
-      time <= seekableRange.end
-    ) {
-      onSeekTo(time, true);
-    } else {
-      onRewind(new Date(time).toISOString(), true);
-    }
-  }
-
-  function goTo(time: number) {
-    explorer.setViewRange(
-      clampViewRange(
-        time,
-        explorer.zoomLevel,
-        explorer.days,
-        explorer.centeredOnMidnight,
-      ),
-    );
-  }
-
   function toggleInterval() {
     if (markA === null || markB === null) return;
     isPlayingInterval ? onStopInterval() : onPlayInterval(markA, markB);
@@ -95,17 +63,11 @@
 
 <div class="mr-5 flex items-center gap-2">
   {#if markA !== null}
-    <div
-      title="View A"
-      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)]/50 text-sm font-semibold hover:bg-[var(--color-interval-100)]/80"
-      onclick={() => goTo(markA!)}
-    >
-      A
-    </div>
     <span
       title="Rewind to A"
       class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
-      onclick={() => seekOrRewind(markA!)}
+      onclick={() =>
+        explorer.seekOrRewind(markA!, seekableRange, onSeekTo, onRewind)}
     >
       {formatDateTime(markA, explorer.timezoneOffset, false)}
     </span>
@@ -116,17 +78,11 @@
   <span class="text-gray-600">—</span>
 
   {#if markB !== null}
-    <div
-      title="View B"
-      class="flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)]/50 text-sm font-semibold hover:bg-[var(--color-interval-100)]/80"
-      onclick={() => goTo(markB!)}
-    >
-      B
-    </div>
     <span
       title="Rewind to B"
       class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
-      onclick={() => seekOrRewind(markB!)}
+      onclick={() =>
+        explorer.seekOrRewind(markB!, seekableRange, onSeekTo, onRewind)}
     >
       {sameDay
         ? formatTime(markB, explorer.timezoneOffset)
@@ -134,6 +90,12 @@
     </span>
   {:else}
     <span class="text-sm text-gray-400">Not picked</span>
+  {/if}
+
+  {#if markA !== null && markB !== null}
+    <span class="text-timestamp text-muted-foreground! tabular-nums">
+      ({formatIntervalDuration(Math.abs(markB - markA))})</span
+    >
   {/if}
 
   <Button

@@ -31,6 +31,7 @@
     mpdStartTime: number;
     isRewound: boolean;
     onRewind: (isoTime: string, pause?: boolean) => Promise<boolean>;
+    onSeekTo: (time: number, pause?: boolean) => void;
     onTimeChange?: () => void;
   }
 
@@ -39,6 +40,7 @@
     mpdStartTime,
     isRewound,
     onRewind,
+    onSeekTo,
     onTimeChange,
   }: Props = $props();
 
@@ -153,7 +155,11 @@
 
   function onPointerMove(e: PointerEvent) {
     if (!timelineEl) return;
-    if (explorer.isSliding || explorer.isIntervalDragging) {
+    if (
+      explorer.isSliding ||
+      explorer.isIntervalDragging ||
+      explorer.isIntervalInteracting
+    ) {
       hoverPx = null;
       return;
     }
@@ -188,7 +194,12 @@
   }
 
   $effect(() => {
-    if (explorer.isSliding || explorer.isIntervalDragging) hoverPx = null;
+    if (
+      explorer.isSliding ||
+      explorer.isIntervalDragging ||
+      explorer.isIntervalInteracting
+    )
+      hoverPx = null;
   });
 </script>
 
@@ -245,7 +256,7 @@
 
     {#if explorer.marks.A || explorer.marks.B}
       <div class="absolute h-[26px] w-full">
-        <IntervalSlider />
+        <IntervalSlider {seekableRange} {onSeekTo} {onRewind} />
       </div>
     {/if}
 

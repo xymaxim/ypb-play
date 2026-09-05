@@ -44,7 +44,7 @@
     type="button"
     title={side === "left" ? "Pan left" : "Pan right"}
     onclick={pan}
-    class="pointer-events-none absolute bottom-0 z-50 flex size-6 cursor-pointer items-center justify-center rounded-full bg-neutral-300 opacity-0 transition-opacity duration-150 group-hover:pointer-events-auto group-hover:opacity-100 hover:bg-neutral-400/70"
+    class="pointer-events-none absolute bottom-0 z-50 flex size-[26px] cursor-pointer items-center justify-center rounded-full bg-neutral-300 opacity-0 transition-opacity duration-150 group-hover:pointer-events-auto group-hover:opacity-100 hover:bg-neutral-400/70"
     class:left-0={side === "left"}
     class:right-0={side === "right"}
     style="transform: translateX({side === 'left'

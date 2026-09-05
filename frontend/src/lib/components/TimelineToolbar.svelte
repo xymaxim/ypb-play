@@ -41,7 +41,7 @@
   <Tabs.Root
     bind:value={activeTab}
     orientation="horizontal"
-    class="relative flex w-full flex-row items-center"
+    class="timeline-toolbar-tabs relative flex w-full flex-row items-center"
   >
     <Tabs.List
       class="z-10 flex h-auto w-30 flex-row gap-1 bg-[var(--background)]"
@@ -104,10 +104,10 @@
   @reference "tailwindcss";
   @reference "../../app.css";
 
-  :global([data-tabs-trigger]) {
+  :global(.timeline-toolbar-tabs [data-tabs-trigger]) {
     @apply flex h-10 w-12! cursor-pointer justify-center rounded-full shadow-none grayscale-100 outline-none! hover:grayscale-0 data-[state=active]:pointer-events-none data-[state=active]:z-20 data-[state=active]:-rotate-0 data-[state=active]:bg-neutral-700! data-[state=active]:opacity-100 data-[state=active]:grayscale-0;
   }
-  :global([data-slot="tabs-content"]) {
+  :global(.timeline-toolbar-tabs [data-slot="tabs-content"]) {
     @apply ml-[-80px] inline-flex h-10 items-center py-1;
   }
 </style>

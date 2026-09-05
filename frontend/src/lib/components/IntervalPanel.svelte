@@ -92,12 +92,6 @@
     <span class="text-sm text-gray-400">Not picked</span>
   {/if}
 
-  {#if markA !== null && markB !== null}
-    <span class="text-timestamp text-muted-foreground! tabular-nums">
-      ({formatIntervalDuration(Math.abs(markB - markA))})</span
-    >
-  {/if}
-
   <Button
     class="rounded-full hover:bg-neutral-300"
     title="Clear interval"

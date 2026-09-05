@@ -4,13 +4,13 @@
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
   import { Label } from "$lib/components/ui/label/index.js";
-  import { Input } from "$lib/components/ui/input/index.js";
   import * as Select from "$lib/components/ui/select/index.js";
   import { Switch } from "$lib/components/ui/switch/index.js";
   import { ZOOM_LEVELS, type ZoomLevelKey } from "$lib/types";
   import * as Expandable from "$lib/components/expandable";
   import * as Popover from "$lib/components/ui/popover/index.js";
   import TimelineZoomControl from "./TimelineZoomControl.svelte";
+  import InputRewindModal from "./InputRewindModal.svelte";
   import {
     ArrowUpRight,
     ArrowDown,
@@ -72,10 +72,7 @@
   let playheadSnapshot = $state<number | null>(null);
   let pendingOffsetValue = $state<string>("UTC+00:00");
 
-  let jumpToTimeDialogOpen = $state(false);
-  let jumpToTimeValue = $state<string>("");
-  let jumpToTimeError = $state<string | null>(null);
-
+  let inputRewindDialogOpen = $state(false);
   let zoomOpen = $state(false);
 
   function jumpToPlayhead() {
@@ -112,63 +109,6 @@
 
   function cancelTimezone() {
     timezoneDialogOpen = false;
-  }
-
-  function toIsoWithOffset(ms: number, offsetMinutes: number): string {
-    const shifted = new Date(ms + offsetMinutes * 60 * 1000);
-    const pad = (n: number) => String(n).padStart(2, "0");
-    const sign = offsetMinutes >= 0 ? "+" : "-";
-    const abs = Math.abs(offsetMinutes);
-    const offH = pad(Math.floor(abs / 60));
-    const offM = pad(abs % 60);
-    return (
-      `${shifted.getUTCFullYear()}-${pad(shifted.getUTCMonth() + 1)}-${pad(shifted.getUTCDate())}` +
-      `T${pad(shifted.getUTCHours())}:${pad(shifted.getUTCMinutes())}:${pad(shifted.getUTCSeconds())}` +
-      `${sign}${offH}:${offM}`
-    );
-  }
-
-  function openJumpToTimeDialog() {
-    const defaultTime = explorer.selectedTime ?? Date.now();
-    jumpToTimeValue = toIsoWithOffset(defaultTime, explorer.timezoneOffset);
-    jumpToTimeError = null;
-    jumpToTimeDialogOpen = true;
-    onClearRewindError();
-    if (isPlaying) onTogglePlayPause();
-  }
-
-  async function confirmJumpToTime() {
-    const value = jumpToTimeValue.trim();
-    const parsed = new Date(value);
-    if (value === "" || Number.isNaN(parsed.getTime())) {
-      jumpToTimeError =
-        "Enter a valid ISO timestamp, e.g. 2026-01-02T10:20:30+00:00";
-      return;
-    }
-    let ts = parsed.getTime();
-    explorer.setSelectedTime(ts);
-    jumpToTimeDialogOpen = false;
-
-    const success = await onRewind(value, true);
-    if (!success) {
-      const ar = explorer.availableRange;
-      if (ar && (ts < ar.start || ts > ar.end)) {
-        ts = Math.max(ar.start + 10 * 60_000, Math.min(ar.end, ts));
-        explorer.setSelectedTime(ts);
-      }
-    }
-    explorer.setViewRange(
-      clampViewRange(
-        ts,
-        explorer.zoomLevel,
-        explorer.days,
-        explorer.centeredOnMidnight,
-      ),
-    );
-  }
-
-  function cancelJumpToTime() {
-    jumpToTimeDialogOpen = false;
   }
 
   function formatSnapshotTime(offsetMinutes: number): string {
@@ -259,9 +199,9 @@
 
     <div class="flex h-10 items-center gap-0 gap-1!">
       <Button
-        title="Jump to time"
-        class="text-normal main-bar__button bg-[var(--color-selected-light)]"
-        onclick={openJumpToTimeDialog}
+        title="Input and rewind"
+        class="text-normal main-bar__button bg-gradient-to-r from-[var(--color-selected-light)] to-[var(--color-interval-light)]"
+        onclick={() => (inputRewindDialogOpen = true)}
       >
         <Pen size={20} />
       </Button>
@@ -476,35 +416,13 @@
       </Dialog.Content>
     </Dialog.Root>
 
-    <Dialog.Root bind:open={jumpToTimeDialogOpen}>
-      <Dialog.Content class="max-w-sm [&_button[data-dialog-close]]:hidden">
-        <Dialog.Header>
-          <Dialog.Title>Jump to time</Dialog.Title>
-        </Dialog.Header>
-
-        <div class="flex flex-col gap-2">
-          <Input
-            id="jump-to-time-input"
-            bind:value={jumpToTimeValue}
-            placeholder="2026-01-02T10:20:30+00:00"
-            onkeydown={(e) => {
-              if (e.key !== "Enter" || e.repeat) return;
-              e.preventDefault();
-              e.stopPropagation();
-              confirmJumpToTime();
-            }}
-          />
-          {#if jumpToTimeError}
-            <p class="text-sm text-destructive">{jumpToTimeError}</p>
-          {/if}
-        </div>
-
-        <Dialog.Footer>
-          <Button variant="ghost" onclick={cancelJumpToTime}>Cancel</Button>
-          <Button variant="ghost" onclick={confirmJumpToTime}>Rewind</Button>
-        </Dialog.Footer>
-      </Dialog.Content>
-    </Dialog.Root>
+    <InputRewindModal
+      bind:open={inputRewindDialogOpen}
+      {isPlaying}
+      {onClearRewindError}
+      {onTogglePlayPause}
+      {onRewind}
+    />
   </div>
 
   <div

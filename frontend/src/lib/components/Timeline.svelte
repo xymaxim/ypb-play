@@ -260,7 +260,7 @@
 
     {#if explorer.marks.A || explorer.marks.B}
       <div class="absolute h-[26px] w-full">
-        <IntervalSlider {seekableRange} {onSeekTo} {onRewind} />
+        <IntervalSlider />
       </div>
     {/if}
 

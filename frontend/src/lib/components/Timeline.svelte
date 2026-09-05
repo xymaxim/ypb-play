@@ -10,12 +10,12 @@
     getStripeBackground,
     snapTime,
   } from "$lib/utils/timelineUtils";
+  import PanGuideButton from "$lib/components/PanGuideButton.svelte";
   import IntervalSlider from "$lib/components/sliders/IntervalSlider.svelte";
   import RewindSlider from "$lib/components/sliders/RewindSlider.svelte";
   import UnavailableMask from "$lib/components/UnavailableMask.svelte";
 
   import {
-    ArrowUpRight,
     Camera,
     Circle,
     Pause,
@@ -164,6 +164,10 @@
       return;
     }
     const px = e.clientX - timelineEl.getBoundingClientRect().left;
+    if (px < 0 || px > bar.width) {
+      hoverPx = null;
+      return;
+    }
     const ts = range ? pixelToTime(px, range, bar.width) : null;
     hoverPx = ts && isAvailable(ts) ? px : null;
   }
@@ -281,6 +285,9 @@
         </div>
       {/if}
     </div>
+
+    <PanGuideButton side="left" />
+    <PanGuideButton side="right" />
   </div>
 
   <div class="relative h-[40px] w-full">

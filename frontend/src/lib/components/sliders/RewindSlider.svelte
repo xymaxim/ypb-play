@@ -264,12 +264,6 @@
         step={1000}
         class="pointer-events-none! relative flex h-full w-full touch-none items-center"
       >
-        <Slider.Track
-          class="relative h-full w-full overflow-hidden rounded-full bg-transparent"
-        >
-          <Slider.Range class="absolute h-full bg-transparent" />
-        </Slider.Track>
-
         <Slider.Thumb
           index={0}
           class="pointer-events-auto relative flex cursor-ew-resize items-center justify-center outline-none {timelineHoverPx

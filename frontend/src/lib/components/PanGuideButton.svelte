@@ -33,9 +33,14 @@
     const end = vr.end + shift;
     if (start > ar.end || end < ar.start) return;
     const center = (vr.start + vr.end) / 2 + shift;
-    explorer.setViewRange(
-      clampViewRange(center, span, explorer.days, explorer.centeredOnMidnight),
+    const next = clampViewRange(
+      center,
+      span,
+      explorer.days,
+      explorer.centeredOnMidnight,
     );
+    explorer.setViewRange(next);
+    explorer.setSelectedTime(Math.min(Math.max(next.start, ar.start), ar.end));
   }
 </script>
 

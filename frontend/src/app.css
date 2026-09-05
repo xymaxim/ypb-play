@@ -241,7 +241,7 @@ button[data-state="off"]:hover {
 }
 
 .text-timestamp {
-  @apply text-sm font-medium whitespace-nowrap text-foreground transition-colors hover:text-muted-foreground;
+  @apply text-sm whitespace-nowrap text-foreground transition-colors hover:text-muted-foreground;
 }
 
 @keyframes pulse-play {

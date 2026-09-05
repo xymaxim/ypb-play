@@ -73,6 +73,8 @@
 
   const thumbSize = $derived(container.height);
 
+  const narrowIntervalWidthPx = 180;
+
   const showGuideA = $derived(
     fill !== null && hasA && vr !== null && A !== null && A < vr.start,
   );
@@ -161,12 +163,17 @@
     {/if}
 
     {#if showGuideA && fill.left !== null && fill.right !== null}
+      {@const narrow = fill.right - fill.left < narrowIntervalWidthPx}
       <div
-        class="pointer-events-none absolute top-1/2 z-50 flex -translate-y-1/2 items-center gap-0 pl-2"
-        style="left: {fill.left}px;"
+        class="pointer-events-none absolute top-1/2 z-50 flex -translate-y-1/2 items-center pl-2"
+        class:w-max={narrow}
+        class:gap-0={!narrow}
+        style={narrow ? `left: ${fill.right + thumbSize}px;` : `left: ${fill.left}px;`}
       >
         <span
-          class="flex size-6 items-center justify-center rounded-full bg-[var(--color-interval-200)] text-sm leading-none font-semibold text-black"
+          class="flex size-[26px] items-center justify-center rounded-full text-sm font-bold leading-none text-black class:bg-white/50={narrow}"
+          class:bg-[var(--color-interval-200)]={!narrow}
+          class:backdrop-blur-md={narrow}
           >A</span
         >
         <button
@@ -178,17 +185,36 @@
             e.stopPropagation();
             seekOrRewind(A!);
           }}
-          class="pointer-events-auto flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)] hover:bg-[var(--color-interval-50)]"
+          class="pointer-events-auto flex size-[26px] cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)] hover:bg-[var(--color-interval-50)]"
         >
           <Undo class="size-5 text-black" strokeWidth={2} />
         </button>
+        {#if narrow && dragging === "B" && durationText !== null}
+          <span
+            class="text-sm leading-none font-medium whitespace-nowrap text-black ml-2"
+            >{durationText}</span
+          >
+        {/if}
       </div>
     {/if}
     {#if showGuideB && fill.left !== null && fill.right !== null}
+      {@const narrow = fill.right - fill.left < narrowIntervalWidthPx}
       <div
         class="pointer-events-none absolute top-1/2 z-50 flex -translate-y-1/2 items-center pr-2"
-        style="right: {container.width - fill.right}px;"
+        class:w-max={narrow}
+        class:-translate-x-full={narrow}
+        class:justify-end={narrow}
+        class:gap-0={!narrow}
+        style={narrow
+          ? `left: ${fill.left - thumbSize}px;`
+          : `right: ${container.width - fill.right}px;`}
       >
+        {#if narrow && dragging === "A" && durationText !== null}
+          <span
+            class="text-sm leading-none font-medium whitespace-nowrap text-black mr-2"
+            >{durationText}</span
+          >
+        {/if}
         <button
           type="button"
           title="Rewind to B ({formatDateTime(B!, explorer.timezoneOffset, false)})"
@@ -198,31 +224,63 @@
             e.stopPropagation();
             seekOrRewind(B!);
           }}
-          class="pointer-events-auto flex size-6 cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)] hover:bg-[var(--color-interval-50)]"
+          class="pointer-events-auto flex size-[26px] cursor-pointer items-center justify-center rounded-full bg-[var(--color-interval-100)] hover:bg-[var(--color-interval-50)]"
         >
           <Redo class="size-5 text-black" strokeWidth={2} />
         </button>
         <span
-          class="flex size-6 items-center justify-center rounded-full bg-[var(--color-interval-200)] text-sm leading-none font-semibold text-black"
+          class="flex size-[26px] items-center justify-center rounded-full text-sm font-bold leading-none text-black class:bg-white/50={narrow}"
+          class:bg-[var(--color-interval-200)]={!narrow}
+          class:backdrop-blur-md={narrow}
           >B</span
         >
       </div>
     {/if}
 
-    {#if dragging !== null && durationText !== null && fill.left !== null && fill.right !== null && fill.right - fill.left >= 80}
-      <div
-        class="pointer-events-none absolute top-1/2 z-40 flex -translate-y-1/2 items-center justify-center"
-        style="
-          left: {fill.left + 1}px;
-          width: {fill.right - fill.left - 2}px;
-          height: {container.height}px;
-        "
-      >
-        <span
-          class="text-sm leading-none font-medium whitespace-nowrap text-white"
-          >{durationText}</span
+    {#if dragging !== null && durationText !== null && fill.left !== null && fill.right !== null}
+      {#if fill.right - fill.left >= narrowIntervalWidthPx}
+        {#if dragging === "A"}
+          <div
+            class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-8"
+            style="left: {fill.left}px;"
+          >
+            <span
+              class="text-sm leading-none font-medium whitespace-nowrap text-white"
+              >{durationText}</span
+            >
+          </div>
+        {:else if dragging === "B"}
+          <div
+            class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-x-full -translate-y-1/2 items-center justify-end pr-8"
+            style="left: {fill.right}px;"
+          >
+            <span
+              class="text-sm leading-none font-medium whitespace-nowrap text-white"
+              >{durationText}</span
+            >
+          </div>
+        {/if}
+      {:else if dragging === "A" && !(showGuideB && fill.right - fill.left < narrowIntervalWidthPx)}
+        <div
+          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-x-full -translate-y-1/2 items-center justify-end pr-2"
+          style="left: {fill.left - thumbSize}px;"
         >
-      </div>
+          <span
+            class="text-sm leading-none font-medium whitespace-nowrap text-black"
+            >{durationText}</span
+          >
+        </div>
+      {:else if dragging === "B" && !(showGuideA && fill.right - fill.left < narrowIntervalWidthPx)}
+        <div
+          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-2"
+          style="left: {fill.right + thumbSize}px;"
+        >
+          <span
+            class="text-sm leading-none font-medium whitespace-nowrap text-black pt-2"
+            >{durationText}</span
+          >
+        </div>
+      {/if}
     {/if}
 
     {#if isAVisible && fill.left !== null && fill.right === null}
@@ -268,7 +326,7 @@
             left: {fill.left - thumbSize}px;
             width: {thumbSize}px;
             height: {thumbSize}px;
-            background: var(--color-interval-300);
+            background: var(--color-interval-400);
         "
       >
         <div
@@ -293,7 +351,7 @@
             left: {fill.right}px;
             width: {thumbSize}px;
             height: {thumbSize}px;
-            background: var(--color-interval-300);
+            background: var(--color-interval-400);
         "
       >
         <span

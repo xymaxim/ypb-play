@@ -93,6 +93,7 @@
       mpdStartTime={mpdStartTime.getTime()}
       {isRewound}
       {onRewind}
+      {onSeekTo}
       onTimeChange={onClearRewindError}
     />
 

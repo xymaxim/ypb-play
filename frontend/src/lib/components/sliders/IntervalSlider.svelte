@@ -101,9 +101,11 @@
     const ts = pixelToTime(x, vr, container.width);
     if (ts === null) return;
 
+    const ar = explorer.availableRange;
     let clamped = ts;
-    if (dragging === "A" && B !== null) clamped = Math.min(ts, B);
-    if (dragging === "B" && A !== null) clamped = Math.max(ts, A);
+    if (ar) clamped = Math.min(Math.max(ts, ar.start), ar.end);
+    if (dragging === "A" && B !== null) clamped = Math.min(clamped, B);
+    if (dragging === "B" && A !== null) clamped = Math.max(clamped, A);
 
     explorer.assignMark(dragging, clamped);
   }
@@ -146,7 +148,7 @@
             style="left: {fill.left}px;"
           >
             <span
-              class="text-sm leading-none font-medium whitespace-nowrap text-white pt-2"
+              class="pt-2 text-sm leading-none font-medium whitespace-nowrap text-white"
               >{durationText}</span
             >
           </div>
@@ -156,7 +158,7 @@
             style="left: {fill.right}px;"
           >
             <span
-              class="text-sm leading-none font-medium whitespace-nowrap text-white pt-2"
+              class="pt-2 text-sm leading-none font-medium whitespace-nowrap text-white"
               >{durationText}</span
             >
           </div>
@@ -167,7 +169,7 @@
           style="left: {fill.left - thumbSize}px;"
         >
           <span
-            class="text-sm leading-none font-medium whitespace-nowrap text-black pt-2"
+            class="pt-2 text-sm leading-none font-medium whitespace-nowrap text-black"
             >{durationText}</span
           >
         </div>
@@ -177,7 +179,7 @@
           style="left: {fill.right + thumbSize}px;"
         >
           <span
-            class="text-sm leading-none font-medium whitespace-nowrap text-black pt-2"
+            class="pt-2 text-sm leading-none font-medium whitespace-nowrap text-black"
             >{durationText}</span
           >
         </div>

@@ -7,10 +7,10 @@
 </script>
 
 <div
-  class="pointer-events-none absolute top-2 left-1/2 z-20 -translate-x-1/2 animate-in duration-200 fade-in slide-in-from-top-2"
+  class="pointer-events-none absolute top-2 left-1/2 z-20 -translate-x-1/2 animate-in duration-600 fade-in slide-in-from-top-2"
 >
   <div
-    class="rounded-lg bg-[var(--popover)] px-4 py-2.5 text-sm font-medium text-[var(--popover-foreground)] shadow-lg ring-1 ring-[var(--border)]"
+    class="rounded-full bg-black px-4 py-3 text-sm font-semibold text-white shadow-lg ring-1 ring-[var(--border)]"
   >
     {message}
   </div>

@@ -215,7 +215,7 @@
 
 button:focus,
 button:focus-visible {
-  @apply ring-0 outline-hidden;
+  @apply border-transparent ring-0 outline-hidden;
 }
 
 button:not(:disabled) {

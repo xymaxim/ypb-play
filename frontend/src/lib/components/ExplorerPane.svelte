@@ -14,6 +14,7 @@
     playingTime: Date | null;
     seekableRange: { start: number; end: number } | null;
     videoEl: HTMLVideoElement | null;
+    videoId: string | null;
     onClearRewindError: () => void;
     onPlayInterval: (a: number, b: number) => void;
     onReplay: () => void;
@@ -33,6 +34,7 @@
     playingTime,
     seekableRange,
     videoEl,
+    videoId,
     onClearRewindError,
     onPlayInterval,
     onReplay,
@@ -111,6 +113,7 @@
         <TimelineToolbar
           {isPlayingInterval}
           {seekableRange}
+          {videoId}
           {onSeekTo}
           {onPlayInterval}
           {onStopInterval}

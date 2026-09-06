@@ -12,8 +12,9 @@
     Square,
     X,
   } from "lucide-svelte";
-  import EditIntervalModal from "./EditIntervalModal.svelte";
+import EditIntervalModal from "./EditIntervalModal.svelte";
   import { getExplorerContext } from "../explorer.svelte";
+  import { getToastContext } from "../toast.svelte";
   import { clampViewRange } from "../utils/timelineUtils";
   import { ZOOM_LEVELS } from "../types";
   import {
@@ -26,6 +27,7 @@
   interface Props {
     isPlayingInterval: boolean;
     seekableRange: { start: number; end: number } | null;
+    videoId: string | null;
     onSeekTo: (time: number, pause?: boolean) => void;
     onRewind: (isoTime: string, pause?: boolean) => void;
     onPlayInterval: (a: number, b: number) => void;
@@ -36,6 +38,7 @@
   const {
     isPlayingInterval,
     seekableRange,
+    videoId,
     onSeekTo,
     onRewind,
     onPlayInterval,
@@ -75,6 +78,15 @@
     const a = formatISOString(markA, explorer.timezoneOffset);
     const b = formatISOString(markB, explorer.timezoneOffset);
     navigator.clipboard.writeText(`${a}/${b}`);
+    getToastContext().toast("Timestamp copied");
+  }
+
+  function copyDownloadCommand() {
+    if (markA === null || markB === null || videoId === null) return;
+    const a = formatISOString(markA, explorer.timezoneOffset);
+    const b = formatISOString(markB, explorer.timezoneOffset);
+    navigator.clipboard.writeText(`ypb download -i ${a}/${b} ${videoId}`);
+    getToastContext().toast("Download command copied");
   }
 
   function fitIntervalToView() {
@@ -314,6 +326,13 @@
         onclick={copyIntervalTimestamp}
       >
         Copy timestamp
+      </DropdownMenu.Item>
+      <DropdownMenu.Item
+        class="cursor-pointer"
+        disabled={markA === null || markB === null || videoId === null}
+        onclick={copyDownloadCommand}
+      >
+        Copy download
       </DropdownMenu.Item>
     </DropdownMenu.Content>
   </DropdownMenu.Root>

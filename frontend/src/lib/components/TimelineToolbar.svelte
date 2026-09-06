@@ -8,6 +8,7 @@
   interface Props {
     isPlayingInterval: boolean;
     seekableRange: { start: number; end: number } | null;
+    videoId: string | null;
     onSeekTo: (time: number, pause?: boolean) => void;
     onPlayInterval: (a: number, b: number) => void;
     onRewind: (isoTime: string, pause?: boolean) => Promise<boolean>;
@@ -17,6 +18,7 @@
   const {
     isPlayingInterval,
     seekableRange,
+    videoId,
     onPlayInterval,
     onRewind,
     onSeekTo,
@@ -90,6 +92,7 @@
       <IntervalPanel
         {isPlayingInterval}
         {seekableRange}
+        {videoId}
         {onSeekTo}
         {onRewind}
         {onPlayInterval}

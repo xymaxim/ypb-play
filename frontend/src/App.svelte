@@ -9,6 +9,7 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import { createExplorer, setExplorerContext } from "./lib/explorer.svelte";
   import { createPlayer } from "./lib/player.svelte";
+  import { setToastContext } from "./lib/toast.svelte";
   import { formatOffset } from "./lib/utils/dateTimeUtils";
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
@@ -173,6 +174,8 @@
       toastTimer = null;
     }, durationMs);
   }
+
+  setToastContext({ toast });
 
   async function handleScreenshot(ts: number) {
     const dataUrl = player.captureScreenshot();
@@ -342,6 +345,7 @@
           mpdStartTime={player.mpdStartTime}
           playingTime={player.playheadTime}
           seekableRange={player.seekableRange}
+          videoId={player.streamInfo?.id ?? null}
           {videoEl}
           onClearRewindError={() => player.clearRewindError()}
           onPlayInterval={(a, b) => player.playInterval(a, b)}

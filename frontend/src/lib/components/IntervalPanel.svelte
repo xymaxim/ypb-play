@@ -1,8 +1,21 @@
 <script lang="ts">
   import { Button } from "$lib/components/ui/button/index.js";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
-  import { EllipsisVertical, Repeat, Square, X } from "lucide-svelte";
+  import * as Popover from "$lib/components/ui/popover/index.js";
+  import {
+    ArrowUpRight,
+    EllipsisVertical,
+    Pen,
+    Redo,
+    Repeat,
+    Minimize2,
+    Square,
+    X,
+  } from "lucide-svelte";
+  import EditIntervalModal from "./EditIntervalModal.svelte";
   import { getExplorerContext } from "../explorer.svelte";
+  import { clampViewRange } from "../utils/timelineUtils";
+  import { ZOOM_LEVELS } from "../types";
   import {
     formatTime,
     formatDateTime,
@@ -38,6 +51,10 @@
     markA !== null && markB !== null && sameOffsetDay(markA, markB),
   );
 
+  let popoverAOpen = $state(false);
+  let popoverBOpen = $state(false);
+  let editIntervalOpen = $state(false);
+
   function sameOffsetDay(a: number, b: number): boolean {
     const off = explorer.timezoneOffset;
     const da = new Date(a + off * 60 * 1000);
@@ -59,18 +76,108 @@
     const b = formatISOString(markB, explorer.timezoneOffset);
     navigator.clipboard.writeText(`${a}/${b}`);
   }
+
+  function fitIntervalToView() {
+    if (markA === null || markB === null) return;
+    const a = Math.min(markA, markB);
+    const b = Math.max(markA, markB);
+    const vr = explorer.viewRange;
+    if (!vr) return;
+
+    if (vr.start <= a && vr.end >= b) return;
+
+    const currentSpan = vr.end - vr.start;
+    let target = explorer.zoomLevel;
+    if (b - a > currentSpan) {
+      const levels = (Object.values(ZOOM_LEVELS) as number[]).sort(
+        (x, y) => x - y,
+      );
+      target = levels.find((l) => l >= b - a) ?? levels[levels.length - 1];
+    }
+
+    explorer.setZoom(target, (a + b) / 2);
+
+    const newVr = explorer.viewRange;
+    const sel = explorer.selectedTime;
+    if (newVr && sel !== null && (sel < newVr.start || sel > newVr.end)) {
+      const ar = explorer.availableRange;
+      explorer.setSelectedTime(
+        ar ? Math.min(Math.max(newVr.start, ar.start), ar.end) : newVr.start,
+      );
+    }
+  }
+
+  function gotoTime(time: number) {
+    explorer.setSelectedTime(time);
+    const vr = explorer.viewRange;
+    if (!vr || time <= vr.start || time >= vr.end) {
+      explorer.setViewRange(
+        clampViewRange(
+          time,
+          explorer.zoomLevel,
+          explorer.days,
+          explorer.centeredOnMidnight,
+        ),
+      );
+    }
+  }
 </script>
 
 <div class="mr-5 flex items-center gap-2">
   {#if markA !== null}
-    <span
-      title="Rewind to A"
-      class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
-      onclick={() =>
-        explorer.seekOrRewind(markA!, seekableRange, onSeekTo, onRewind)}
-    >
-      {formatDateTime(markA, explorer.timezoneOffset, false)}
-    </span>
+    <Popover.Root bind:open={popoverAOpen}>
+      <Popover.Trigger>
+        {#snippet child({ props })}
+          <button
+            type="button"
+            {...props}
+            title="Actions for A"
+            class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
+          >
+            {formatDateTime(markA, explorer.timezoneOffset, false)}
+          </button>
+        {/snippet}
+      </Popover.Trigger>
+      <Popover.Content
+        side="top"
+        align="center"
+        class="w-auto! flex-row! items-center! gap-2! rounded-full! px-3! py-1!"
+      >
+        <span class="px-1 font-bold text-black">A</span>
+        <Button
+          title="Rewind to A"
+          variant="ghost"
+          class="group gap-2 rounded-full p-1 hover:bg-transparent!"
+          onclick={() => {
+            explorer.seekOrRewind(markA!, seekableRange, onSeekTo, onRewind);
+            popoverAOpen = false;
+          }}
+        >
+          <span
+            class="flex size-7 items-center justify-center rounded-full bg-[var(--color-interval-100)] transition-colors group-hover:bg-[var(--color-interval-50)]"
+          >
+            <Redo class="size-4 text-black" strokeWidth={2} />
+          </span>
+          <span class="text-sm font-medium">Rewind</span>
+        </Button>
+        <Button
+          title="Jump to A"
+          variant="ghost"
+          class="group gap-2 rounded-full p-1 hover:bg-transparent!"
+          onclick={() => {
+            gotoTime(markA!);
+            popoverAOpen = false;
+          }}
+        >
+          <span
+            class="flex size-7 items-center justify-center rounded-full bg-[var(--color-interval-100)] transition-colors group-hover:bg-[var(--color-interval-50)]"
+          >
+            <ArrowUpRight class="size-4 text-black" strokeWidth={2} />
+          </span>
+          <span class="text-sm font-medium">Jump</span>
+        </Button>
+      </Popover.Content>
+    </Popover.Root>
   {:else}
     <span class="text-sm text-gray-600">Not picked</span>
   {/if}
@@ -78,22 +185,67 @@
   <span class="text-gray-600">—</span>
 
   {#if markB !== null}
-    <span
-      title="Rewind to B"
-      class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
-      onclick={() =>
-        explorer.seekOrRewind(markB!, seekableRange, onSeekTo, onRewind)}
-    >
-      {sameDay
-        ? formatTime(markB, explorer.timezoneOffset)
-        : `${formatDateTime(markB, explorer.timezoneOffset, false)}`}
-    </span>
+    <Popover.Root bind:open={popoverBOpen}>
+      <Popover.Trigger>
+        {#snippet child({ props })}
+          <button
+            type="button"
+            {...props}
+            title="Actions for B"
+            class="text-timestamp cursor-pointer whitespace-nowrap tabular-nums"
+          >
+            {sameDay
+              ? formatTime(markB, explorer.timezoneOffset)
+              : `${formatDateTime(markB, explorer.timezoneOffset, false)}`}
+          </button>
+        {/snippet}
+      </Popover.Trigger>
+      <Popover.Content
+        side="top"
+        align="center"
+        class="w-auto! flex-row! items-center! gap-2! rounded-full! px-3! py-1!"
+      >
+        <span class="px-1 font-bold text-black">B</span>
+        <Button
+          title="Rewind to B"
+          variant="ghost"
+          class="group gap-2 rounded-full p-1 hover:bg-transparent!"
+          onclick={() => {
+            explorer.seekOrRewind(markB!, seekableRange, onSeekTo, onRewind);
+            popoverBOpen = false;
+          }}
+        >
+          <span
+            class="flex size-7 items-center justify-center rounded-full bg-[var(--color-interval-100)] transition-colors group-hover:bg-[var(--color-interval-50)]"
+          >
+            <Redo class="size-4 text-black" strokeWidth={2} />
+          </span>
+          <span class="text-sm font-medium">Rewind</span>
+        </Button>
+        <Button
+          title="Jump to B"
+          variant="ghost"
+          class="group gap-2 rounded-full p-1 hover:bg-transparent!"
+          onclick={() => {
+            gotoTime(markB!);
+            popoverBOpen = false;
+          }}
+        >
+          <span
+            class="flex size-7 items-center justify-center rounded-full bg-[var(--color-interval-100)] transition-colors group-hover:bg-[var(--color-interval-50)]"
+          >
+            <ArrowUpRight class="size-4 text-black" strokeWidth={2} />
+          </span>
+          <span class="text-sm font-medium">Jump</span>
+        </Button>
+      </Popover.Content>
+    </Popover.Root>
   {:else}
     <span class="text-sm text-gray-400">Not picked</span>
   {/if}
 
   <Button
-    class="rounded-full hover:bg-neutral-300"
+    class="rounded-full bg-neutral-300 hover:bg-neutral-200"
     title="Clear interval"
     variant="ghost"
     size="icon-sm"
@@ -101,6 +253,30 @@
   >
     <X />
   </Button>
+
+  {#if markA !== null || markB !== null}
+    <Button
+      class="rounded-full bg-neutral-300 hover:bg-neutral-200"
+      title="Edit interval"
+      variant="ghost"
+      size="icon-sm"
+      onclick={() => (editIntervalOpen = true)}
+    >
+      <Pen />
+    </Button>
+  {/if}
+
+  {#if markA !== null && markB !== null}
+    <Button
+      class="rounded-full bg-neutral-300 hover:bg-neutral-200"
+      title="Fit interval to view"
+      variant="ghost"
+      size="icon-sm"
+      onclick={fitIntervalToView}
+    >
+      <Minimize2 />
+    </Button>
+  {/if}
 </div>
 
 <div class="selection-toolbar__row">
@@ -142,6 +318,8 @@
     </DropdownMenu.Content>
   </DropdownMenu.Root>
 </div>
+
+<EditIntervalModal bind:open={editIntervalOpen} />
 
 <style>
   :global([data-tabs-content]) {

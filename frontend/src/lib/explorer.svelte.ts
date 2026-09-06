@@ -121,26 +121,26 @@ export function createExplorer(
   }
 
   // View actions
-  function setZoom(level: ZoomLevel): void {
+  function setZoom(level: ZoomLevel, center?: number): void {
     zoomLevel = level;
     if (viewRange === null) return;
 
-    let center: number;
-
-    if (
-      selectedTime !== null &&
-      selectedTime >= viewRange.start &&
-      selectedTime <= viewRange.end
-    ) {
-      center = selectedTime;
-    } else if (
-      playheadTime !== null &&
-      playheadTime >= viewRange.start &&
-      playheadTime <= viewRange.end
-    ) {
-      center = playheadTime;
-    } else {
-      center = (viewRange.start + viewRange.end) / 2;
+    if (center === undefined) {
+      if (
+        selectedTime !== null &&
+        selectedTime >= viewRange.start &&
+        selectedTime <= viewRange.end
+      ) {
+        center = selectedTime;
+      } else if (
+        playheadTime !== null &&
+        playheadTime >= viewRange.start &&
+        playheadTime <= viewRange.end
+      ) {
+        center = playheadTime;
+      } else {
+        center = (viewRange.start + viewRange.end) / 2;
+      }
     }
 
     viewRange = clampViewRange(center, level, days, centeredOnMidnight);

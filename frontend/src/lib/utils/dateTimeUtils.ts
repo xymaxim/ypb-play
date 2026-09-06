@@ -129,6 +129,13 @@ export function formatIntervalDuration(ms: number): string {
   return parts.length > 0 ? parts.join("") : "0s";
 }
 
+export function parseTimestamp(value: string): number | null {
+  const trimmed = value.trim();
+  const d = new Date(trimmed);
+  if (trimmed === "" || Number.isNaN(d.getTime())) return null;
+  return d.getTime();
+}
+
 export function formatISOString(ts: number, offsetMinutes: number): string {
   const shifted = new Date(ts + offsetMinutes * 60_000);
   const sign = offsetMinutes >= 0 ? "+" : "-";

@@ -2,10 +2,11 @@
   import { untrack } from "svelte";
   import { Button } from "$lib/components/ui/button/index.js";
   import { Input } from "$lib/components/ui/input/index.js";
+  import { Label } from "$lib/components/ui/label/index.js";
   import * as Dialog from "$lib/components/ui/dialog/index.js";
-  import * as Tabs from "$lib/components/ui/tabs/index.js";
   import { getExplorerContext } from "../explorer.svelte";
   import { clampViewRange } from "../utils/timelineUtils";
+  import { parseTimestamp } from "../utils/dateTimeUtils";
 
   interface Props {
     open?: boolean;
@@ -27,14 +28,10 @@
 
   let inputValue = $state<string>("");
   let inputError = $state<string | null>(null);
-  let activeTab = $state<"moment" | "interval">("moment");
-  let intervalA = $state<string>("");
-  let intervalB = $state<string>("");
-  let intervalAError = $state<boolean>(false);
-  let intervalBError = $state<boolean>(false);
 
   const invalidInputError =
     "Enter a valid timestamp, e.g. 2026-01-02T10:20:30+00:00";
+  const outOfRangeError = "Timestamp is outside the available range";
 
   function toIsoWithOffset(ms: number, offsetMinutes: number): string {
     const shifted = new Date(ms + offsetMinutes * 60 * 1000);
@@ -55,38 +52,44 @@
     untrack(() => {
       const defaultTime = explorer.selectedTime ?? Date.now();
       inputValue = toIsoWithOffset(defaultTime, explorer.timezoneOffset);
-      intervalA =
-        explorer.marks.A !== null
-          ? toIsoWithOffset(explorer.marks.A, explorer.timezoneOffset)
-          : inputValue;
-      intervalB =
-        explorer.marks.B !== null
-          ? toIsoWithOffset(explorer.marks.B, explorer.timezoneOffset)
-          : inputValue;
       inputError = null;
-      intervalAError = false;
-      intervalBError = false;
       onClearRewindError();
       if (isPlaying) onTogglePlayPause();
     });
   });
 
+  function splitInterval(value: string): string[] {
+    if (value.includes("/")) return value.split("/");
+    if (value.includes("--")) return value.split("--");
+    return [value];
+  }
+
   async function submit() {
-    if (activeTab === "interval") {
-      await submitInterval();
+    const parts = splitInterval(inputValue.trim());
+    if (parts.length === 1) {
+      await submitMoment(parts[0]);
+    } else if (parts.length === 2) {
+      await submitInterval(parts[0], parts[1]);
     } else {
-      await submitMoment();
+      inputError = invalidInputError;
     }
   }
 
-  async function submitMoment() {
-    const value = inputValue.trim();
-    const parsed = new Date(value);
-    if (value === "" || Number.isNaN(parsed.getTime())) {
+  function isOutOfRange(ts: number): boolean {
+    const ar = explorer.availableRange;
+    return ar !== null && (ts < ar.start || ts > ar.end);
+  }
+
+  async function submitMoment(value: string) {
+    const ts = parseTimestamp(value);
+    if (ts === null) {
       inputError = invalidInputError;
       return;
     }
-    let ts = parsed.getTime();
+    if (isOutOfRange(ts)) {
+      inputError = outOfRangeError;
+      return;
+    }
     explorer.setSelectedTime(ts);
     open = false;
 
@@ -94,8 +97,8 @@
     if (!success) {
       const ar = explorer.availableRange;
       if (ar && (ts < ar.start || ts > ar.end)) {
-        ts = Math.max(ar.start + 10 * 60_000, Math.min(ar.end, ts));
-        explorer.setSelectedTime(ts);
+        const clamped = Math.max(ar.start + 10 * 60_000, Math.min(ar.end, ts));
+        explorer.setSelectedTime(clamped);
       }
     }
     explorer.setViewRange(
@@ -108,35 +111,38 @@
     );
   }
 
-  async function submitInterval() {
-    intervalAError = false;
-    intervalBError = false;
-    const av = intervalA.trim();
-    const bv = intervalB.trim();
-    const a = new Date(av);
-    const b = new Date(bv);
-    if (av === "" || Number.isNaN(a.getTime())) intervalAError = true;
-    if (bv === "" || Number.isNaN(b.getTime())) intervalBError = true;
-    if (intervalAError || intervalBError) return;
-    const lo = Math.min(a.getTime(), b.getTime());
-    const hi = Math.max(a.getTime(), b.getTime());
+  async function submitInterval(aValue: string, bValue: string) {
+    const aTs = parseTimestamp(aValue);
+    const bTs = parseTimestamp(bValue);
+
+    const errors: string[] = [];
+    if (aTs === null) errors.push(`A: ${invalidInputError}`);
+    if (bTs === null) errors.push(`B: ${invalidInputError}`);
+    if (aTs !== null && isOutOfRange(aTs)) errors.push(`A: ${outOfRangeError}`);
+    if (bTs !== null && isOutOfRange(bTs)) errors.push(`B: ${outOfRangeError}`);
+    if (errors.length > 0) {
+      inputError = errors.join("\n");
+      return;
+    }
+
+    const lo = Math.min(aTs!, bTs!);
+    const hi = Math.max(aTs!, bTs!);
     explorer.assignMark("A", lo);
     explorer.assignMark("B", hi);
     explorer.setSelectedTime(lo);
     open = false;
 
-    let ts = lo;
     const success = await onRewind(new Date(lo).toISOString(), true);
     if (!success) {
       const ar = explorer.availableRange;
-      if (ar && (ts < ar.start || ts > ar.end)) {
-        ts = Math.max(ar.start + 10 * 60_000, Math.min(ar.end, ts));
-        explorer.setSelectedTime(ts);
+      if (ar && (lo < ar.start || lo > ar.end)) {
+        const clamped = Math.max(ar.start + 10 * 60_000, Math.min(ar.end, lo));
+        explorer.setSelectedTime(clamped);
       }
     }
     explorer.setViewRange(
       clampViewRange(
-        ts,
+        lo,
         explorer.zoomLevel,
         explorer.days,
         explorer.centeredOnMidnight,
@@ -155,87 +161,30 @@
       <Dialog.Title>Input and Rewind</Dialog.Title>
     </Dialog.Header>
 
-    <Tabs.Root
-      bind:value={activeTab}
-      onValueChange={() => {
-        inputError = null;
-        intervalAError = false;
-        intervalBError = false;
-      }}
-    >
-      <Tabs.List class="bg-transparent">
-        <Tabs.Trigger value="moment">Moment</Tabs.Trigger>
-        <Tabs.Trigger value="interval">Interval</Tabs.Trigger>
-      </Tabs.List>
-
-      <Tabs.Content value="moment">
-        <Input
-          id="jump-to-time-input"
-          bind:value={inputValue}
-          placeholder="2026-01-02T10:20:30+00:00"
-          class="focus-visible:border-input {inputError
-            ? 'border-destructive'
-            : 'border-input'}"
-          onkeydown={(e) => {
-            if (e.key !== "Enter" || e.repeat) return;
-            e.preventDefault();
-            e.stopPropagation();
-            submit();
-          }}
-        />
-        {#if inputError}
-          <p class="mt-2 text-sm text-destructive">{inputError}</p>
-        {/if}
-      </Tabs.Content>
-
-      <Tabs.Content value="interval">
-        <div class="flex flex-col gap-2">
-          <div class="flex items-center gap-2">
-            <span
-              class="flex size-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-interval-100)]/50 text-sm font-semibold"
-              >A</span
-            >
-            <Input
-              id="jump-to-interval-a"
-              bind:value={intervalA}
-              placeholder="2026-01-02T10:20:30+00:00"
-              class="focus-visible:border-input {intervalAError
-                ? 'border-destructive'
-                : 'border-input'}"
-              onkeydown={(e) => {
-                if (e.key !== "Enter" || e.repeat) return;
-                e.preventDefault();
-                e.stopPropagation();
-                submit();
-              }}
-            />
-          </div>
-          <div class="flex items-center gap-2">
-            <span
-              class="flex size-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-interval-100)]/50 text-sm font-semibold"
-              >B</span
-            >
-            <Input
-              id="jump-to-interval-b"
-              bind:value={intervalB}
-              placeholder="2026-01-02T10:20:30+00:00"
-              class="focus-visible:border-input {intervalBError
-                ? 'border-destructive'
-                : 'border-input'}"
-              onkeydown={(e) => {
-                if (e.key !== "Enter" || e.repeat) return;
-                e.preventDefault();
-                e.stopPropagation();
-                submit();
-              }}
-            />
-          </div>
-        </div>
-        {#if intervalAError || intervalBError}
-          <p class="mt-2 text-sm text-destructive">{invalidInputError}</p>
-        {/if}
-      </Tabs.Content>
-    </Tabs.Root>
+    <div class="flex flex-col gap-2">
+      <Label for="input-rewind-input" class="text-sm font-normal">
+        Moment or interval
+      </Label>
+      <Input
+        id="input-rewind-input"
+        bind:value={inputValue}
+        placeholder="2026-01-02T10:20:30+00:00 or A/B"
+        class="focus-visible:border-input {inputError
+          ? 'border-destructive'
+          : 'border-input'}"
+        onkeydown={(e) => {
+          if (e.key !== "Enter" || e.repeat) return;
+          e.preventDefault();
+          e.stopPropagation();
+          submit();
+        }}
+      />
+      {#if inputError}
+        <p class="mt-2 text-sm whitespace-pre-line text-destructive">
+          {inputError}
+        </p>
+      {/if}
+    </div>
 
     <Dialog.Footer>
       <Button variant="ghost" onclick={close}>Cancel</Button>

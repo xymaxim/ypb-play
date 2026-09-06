@@ -187,7 +187,7 @@ export function getStripeBackground(
   const stripeWidthPx = (stripeMs / spanMs) * barWidth;
 
   let stripeGradient: string;
-  if (stripeMs >= 24 * MS_PER_HOUR) {
+  if (stripeMs > 24 * MS_PER_HOUR) {
     stripeGradient = `repeating-linear-gradient(90deg, ${darkColor} 0%, rgb(0 0 0 / 2%) 100%)`;
   } else {
     const lightPercent = Math.max(0, 100 - (fadeWidthPx / stripeWidthPx) * 100);

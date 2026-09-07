@@ -354,7 +354,20 @@ export function createPlayer(getVideoEl: () => HTMLVideoElement | null) {
   async function playInterval(a: number, b: number) {
     isPlayingInterval = true;
     intervalStopTime = b;
-    await rewind(new Date(a).toISOString());
+    const videoEl = getVideoEl();
+    if (
+      videoEl &&
+      mpdStartTime &&
+      dashPlayer &&
+      seekableRange !== null &&
+      a >= seekableRange.start &&
+      a <= seekableRange.end
+    ) {
+      seekTo(a);
+      videoEl.play();
+    } else {
+      await rewind(new Date(a).toISOString());
+    }
   }
 
   function stopInterval(markATime: number | null = null) {

@@ -135,10 +135,10 @@
         <Circle size={6} strokeWidth={5} fill="none" />
       </div>
     {:else if playingTime !== null}
-      <div class="flex w-70 cursor-pointer items-center gap-4">
+      <div class="flex w-70 items-center gap-4">
         {#if isPlaying}
           <div
-            class="flex size-10 items-center justify-center rounded-full bg-rose-200"
+            class="flex size-10 cursor-pointer items-center justify-center rounded-full bg-rose-200"
             onclick={onTogglePlayPause}
           >
             <Pause strokeWidth={2} />
@@ -155,40 +155,44 @@
           </div>
         {:else}
           <div
-            class="flex size-10! h-[42px] w-11 items-center justify-center rounded-full bg-rose-200"
+            class="flex size-10! h-[42px] w-11 cursor-pointer items-center justify-center rounded-full bg-rose-200"
             onclick={onTogglePlayPause}
           >
             <Play strokeWidth={2} size={20} />
           </div>
         {/if}
         <div
-          class="relative inline-block inline-flex items-center justify-start! gap-2 text-xl
+          class="inline-flex items-center gap-2 text-xl
                      {isPlayheadOutOfView
             ? 'text-gray-300!'
             : 'text-foreground!'}"
-          title="Jump to playhead"
-          onclick={jumpToPlayhead}
         >
-          <span class="flex items-center font-normal tabular-nums">
+          <span
+            class="relative flex items-center font-normal tabular-nums {isPlayheadOutOfView
+              ? 'cursor-pointer'
+              : 'pointer-events-none'}"
+            title={isPlayheadOutOfView ? "Jump to playhead" : undefined}
+            onclick={jumpToPlayhead}
+          >
             {formatDateTime(
               playingTime.getTime(),
               explorer.timezoneOffset,
               false,
             )}
+            {#if isPlayheadOutOfView}
+              <span
+                class="absolute top-1/2 left-1/2 flex size-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-play-200)] p-0.5 ring-2 ring-[var(--background)]"
+              >
+                <ArrowUpRight strokeWidth={2} class="text-foreground" />
+              </span>
+            {/if}
           </span>
           <span
-            class="flex h-9 w-10 items-center justify-center rounded-full bg-neutral-200 text-sm"
+            class="flex h-9 w-10 cursor-pointer items-center justify-center rounded-full bg-neutral-200 text-sm transition-colors hover:bg-neutral-100"
             onclick={openTimezoneDialog}
           >
             {formatOffset(explorer.timezoneOffset)}
           </span>
-          {#if isPlayheadOutOfView}
-            <span
-              class="absolute top-1/2 left-1/2 flex size-9 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--color-play-200)] p-0.5 ring-2 ring-[var(--background)]"
-            >
-              <ArrowUpRight strokeWidth={2} class="text-foreground" />
-            </span>
-          {/if}
         </div>
       </div>
     {:else}

@@ -19,7 +19,7 @@
   } from "dashjs";
   import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
   import { clampSeekTarget } from "$lib/player.svelte";
-  import ActionButton from "./ActionButton.svelte";
+  import { Button } from "$lib/components/ui/button/index.js";
 
   interface Props {
     videoEl: HTMLVideoElement | null;
@@ -96,6 +96,10 @@
 
   function onPause() {
     isPlaying = false;
+  }
+
+  function handleScreenshot() {
+    onScreenshot();
   }
 
   function onTimeUpdate() {
@@ -372,16 +376,14 @@
             <Volume2 size={22} strokeWidth={2} />
           {/if}
         </button>
-        <ActionButton
+        <Button
           variant="ghost"
-          size="icon-lg"
           title="Take screenshot"
-          notification={{ message: "Screenshot saved" }}
-          action={onScreenshot}
-          class="pointer-events-auto size-10 text-white hover:bg-white/25 hover:text-white"
+          class="pointer-events-auto size-10 rounded-full text-white transition-colors hover:bg-white/25 hover:text-white"
+          onclick={handleScreenshot}
         >
           <Camera class="size-[22px]" />
-        </ActionButton>
+        </Button>
         <DropdownMenu.Root
           open={qualityOpen}
           onOpenChange={(open) => {

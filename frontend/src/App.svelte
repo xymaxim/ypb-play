@@ -7,6 +7,7 @@
   import { CheckAllDependencies } from "../bindings/rewyt/services/dependenciesservice";
   import { Events } from "@wailsio/runtime";
   import { Button } from "$lib/components/ui/button/index.js";
+  import { Camera } from "lucide-svelte";
   import { createExplorer, setExplorerContext } from "./lib/explorer.svelte";
   import { createPlayer } from "./lib/player.svelte";
   import { setToastContext, type ToastIcon } from "./lib/toast.svelte";
@@ -139,6 +140,10 @@
       if (explorer.playheadTime !== null)
         explorer.setSelectedTime(explorer.playheadTime);
     },
+    s: () => {
+      if (player.streamInfo)
+        handleScreenshot(player.playheadTime?.getTime() ?? Date.now());
+    },
   };
 
   function handleKeyDown(e: KeyboardEvent) {
@@ -193,6 +198,7 @@
     a.href = dataUrl;
     a.download = filename;
     a.click();
+    toast("Screenshot saved", Camera);
   }
 
   // Lifecycle

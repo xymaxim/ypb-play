@@ -9,7 +9,7 @@
   import { Button } from "$lib/components/ui/button/index.js";
   import { createExplorer, setExplorerContext } from "./lib/explorer.svelte";
   import { createPlayer } from "./lib/player.svelte";
-  import { setToastContext } from "./lib/toast.svelte";
+  import { setToastContext, type ToastIcon } from "./lib/toast.svelte";
   import { formatOffset } from "./lib/utils/dateTimeUtils";
   import TopBar from "./lib/components/TopBar.svelte";
   import ExplorerPane from "./lib/components/ExplorerPane.svelte";
@@ -164,13 +164,16 @@
 
   // Toast
   let toastMessage = $state<string | null>(null);
+  let toastIcon = $state<ToastIcon | null>(null);
   let toastTimer: ReturnType<typeof setTimeout> | null = null;
 
-  function toast(msg: string, durationMs = 2000) {
+  function toast(msg: string, icon?: ToastIcon, durationMs = 3000) {
     toastMessage = msg;
+    toastIcon = icon ?? null;
     if (toastTimer) clearTimeout(toastTimer);
     toastTimer = setTimeout(() => {
       toastMessage = null;
+      toastIcon = null;
       toastTimer = null;
     }, durationMs);
   }
@@ -217,7 +220,7 @@
   class="relative mx-auto flex w-full max-w-4xl min-w-2xl flex-col gap-2 px-6 py-3"
 >
   {#if toastMessage}
-    <Toast message={toastMessage} />
+    <Toast message={toastMessage} icon={toastIcon} />
   {/if}
 
   <TopBar

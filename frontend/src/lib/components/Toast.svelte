@@ -1,17 +1,24 @@
 <script lang="ts">
+  import type { ToastIcon } from "../toast.svelte";
+
   interface Props {
     message: string;
+    icon?: ToastIcon | null;
   }
 
-  const { message }: Props = $props();
+  const { message, icon = null }: Props = $props();
 </script>
 
 <div
-  class="pointer-events-none absolute top-2 left-1/2 z-20 -translate-x-1/2 animate-in duration-600 fade-in slide-in-from-top-2"
+  class="pointer-events-none absolute top-2 left-1/2 z-20 -translate-x-1/2 animate-in fade-in slide-in-from-top-2"
 >
   <div
-    class="rounded-full bg-black px-4 py-3 text-sm font-semibold text-white shadow-lg ring-1 ring-[var(--border)]"
+    class="flex items-center gap-2 rounded-full bg-[var(--color-selected-darkest)] p-4 text-sm font-medium text-white shadow-md"
   >
+    {#if icon}
+      {@const IconComp = icon}
+      <IconComp size={16} />
+    {/if}
     {message}
   </div>
 </div>

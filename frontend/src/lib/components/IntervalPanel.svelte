@@ -4,6 +4,7 @@
   import * as Popover from "$lib/components/ui/popover/index.js";
   import {
     ArrowUpRight,
+    Copy,
     EllipsisVertical,
     Pen,
     Redo,
@@ -78,7 +79,7 @@ import EditIntervalModal from "./EditIntervalModal.svelte";
     const a = formatISOString(markA, explorer.timezoneOffset);
     const b = formatISOString(markB, explorer.timezoneOffset);
     navigator.clipboard.writeText(`${a}/${b}`);
-    getToastContext().toast("Timestamp copied");
+    getToastContext().toast("Timestamp copied", Copy);
   }
 
   function copyDownloadCommand() {
@@ -86,7 +87,7 @@ import EditIntervalModal from "./EditIntervalModal.svelte";
     const a = formatISOString(markA, explorer.timezoneOffset);
     const b = formatISOString(markB, explorer.timezoneOffset);
     navigator.clipboard.writeText(`ypb download -i ${a}/${b} ${videoId}`);
-    getToastContext().toast("Download command copied");
+    getToastContext().toast("Download command copied", Copy);
   }
 
   function fitIntervalToView() {

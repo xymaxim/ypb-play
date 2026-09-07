@@ -39,6 +39,14 @@
             <span>Mark interval end (B)</span>
             <Kbd.Root class="text-sm">b</Kbd.Root>
           </li>
+          <li class="flex items-center justify-between">
+            <span>Set selected time</span>
+            <Kbd.Root class="text-sm">r</Kbd.Root>
+          </li>
+          <li class="flex items-center justify-between">
+            <span>Take screenshot</span>
+            <Kbd.Root class="text-sm">s</Kbd.Root>
+          </li>
         </ul>
       </div>
 

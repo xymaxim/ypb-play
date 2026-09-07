@@ -126,6 +126,11 @@
       e.preventDefault();
       player.togglePlayPause();
     },
+    Backspace: (e) => {
+      e.preventDefault();
+      const range = player.seekableRange;
+      if (range) player.seekTo(range.start);
+    },
     ArrowLeft: () => player.step(-2),
     ArrowRight: () => player.step(2),
     a: () => {

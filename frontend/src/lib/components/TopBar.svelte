@@ -186,7 +186,6 @@
         <DropdownMenu.Content align="end" class="w-50 text-base">
           <DropdownMenu.Item onSelect={() => (showHotkeys = true)}>
             Hotkeys
-            <DropdownMenu.Shortcut>?</DropdownMenu.Shortcut>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>

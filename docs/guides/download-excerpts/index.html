@@ -977,22 +977,22 @@ Compose</a> instead.</p>
    </figure>
 
 <ol>
-<li><strong>Copy the timestamp</strong></li>
+<li><strong>Copy the download command</strong></li>
 </ol>
 <p>Open the <strong>Highlight</strong> tab at the bottom of the interface. Click <strong>More</strong>,
-   then select <strong>Copy timestamp</strong>. This copies a timestamp that tells ypb
-   exactly which part of the stream to download, for example:</p>
-<p><code>2026-06-20T10:00:00+03:00/2026-06-20T20:00:00+03:00</code></p>
+   then select <strong>Copy download</strong>. This copies ypb&rsquo;s download command with an
+   interval timestamp and YouTube video ID:</p>
+<p><code>ypb download -i 2026-09-05T03:14:15+00:00/2026-09-05T09:26:53+00:00 abcdefgh123</code></p>
 <figure>
-   <img src=".././download-excerpts-files/download-copy-timestamp.png"/>
-   <figcaption aria-hidden="true">Copying the timestamp of the highlighted excerpt</figcaption>
+   <img src=".././download-excerpts-files/download-copy-download.png"/>
+   <figcaption aria-hidden="true">Copying the download command for the highlighted excerpt</figcaption>
    </figure>
 
 <ol>
 <li><strong>Download the excerpt</strong></li>
 </ol>
-<p>Run the download command with the copied timestamp and the YouTube video ID:</p>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ypb<span class="w"> </span>download<span class="w"> </span><span class="m">2026</span>-06-20T10:00:00+03:00/2026-06-20T20:00:00+03:00<span class="w"> </span>abcdefgh123
+<p>Run the download command with the copied command:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>ypb<span class="w"> </span>download<span class="w"> </span>-i<span class="w"> </span><span class="m">2026</span>-09-05T03:14:15+00:00/2026-09-05T09:26:53+00:00<span class="w"> </span>abcdefgh123
 </span></code></pre></div>
 <p>By the end, you will have a downloaded file in your working directory when done.</p>
 <h2 id="see-also">See also<a class="headerlink" href="#see-also" title="Permanent link">&para;</a></h2>

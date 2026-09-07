@@ -156,7 +156,7 @@
 </script>
 
 <Dialog.Root bind:open>
-  <Dialog.Content class="max-w-lg [&_button[data-dialog-close]]:hidden">
+  <Dialog.Content class="w-full sm:max-w-md [&_button[data-dialog-close]]:hidden">
     <Dialog.Header>
       <Dialog.Title>Input and Rewind</Dialog.Title>
     </Dialog.Header>

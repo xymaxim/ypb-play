@@ -28,25 +28,25 @@ Rewyt doesn't download excerpts directly, you need [ypb](https://github.com/xyma
    <figcaption aria-hidden="true">Highlighting an excerpt on the timeline</figcaption>
    </figure>
 
-2. **Copy the timestamp**
+2. **Copy the download command**
 
    Open the **Highlight** tab at the bottom of the interface. Click **More**,
-   then select **Copy timestamp**. This copies a timestamp that tells ypb
-   exactly which part of the stream to download, for example:
+   then select **Copy download**. This copies ypb's download command with an
+   interval timestamp and YouTube video ID:
 
-   `2026-06-20T10:00:00+03:00/2026-06-20T20:00:00+03:00`
+   `ypb download -i 2026-09-05T03:14:15+00:00/2026-09-05T09:26:53+00:00 abcdefgh123`
 
    <figure>
-   <img src="./download-excerpts-files/download-copy-timestamp.png"/>
-   <figcaption aria-hidden="true">Copying the timestamp of the highlighted excerpt</figcaption>
+   <img src="./download-excerpts-files/download-copy-download.png"/>
+   <figcaption aria-hidden="true">Copying the download command for the highlighted excerpt</figcaption>
    </figure>
 
 3. **Download the excerpt**
 
-   Run the download command with the copied timestamp and the YouTube video ID:
+   Run the download command with the copied command:
 
    ```bash
-   ypb download 2026-06-20T10:00:00+03:00/2026-06-20T20:00:00+03:00 abcdefgh123
+   ypb download -i 2026-09-05T03:14:15+00:00/2026-09-05T09:26:53+00:00 abcdefgh123
    ```
    
 By the end, you will have a downloaded file in your working directory when done.

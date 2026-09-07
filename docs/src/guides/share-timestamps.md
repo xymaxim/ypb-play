@@ -1,6 +1,6 @@
 # Share and paste timestamps
 
-This guide shows you how to copy a timestamp from the stream and jump to a shared one.
+This guide shows you how to copy a timestamp from the stream and rewind to a shared one.
 
 ## Copy a timestamp
 
@@ -14,7 +14,7 @@ This guide shows you how to copy a timestamp from the stream and jump to a share
    then select **Copy timestamp**. This copies an ISO timestamp to your
    clipboard, for example:
 
-        2026-06-20T14:30:00+03:00
+        2026-09-07T03:14:15+00:00
 
    <figure>
    <img src="./share-timestamps-files/share-copy-timestamp.png"/>
@@ -25,13 +25,13 @@ Share this timestamp with others so they can jump to the exact same moment.
 
 ## Jump to a shared timestamp
 
-1. **Open the Jump to time dialog**
+1. **Open the Input and rewind dialog**
 
-   Click the **Jump to time** button in the main bar.
+   Click the **Input and rewind** button in the main bar.
 
    <figure>
-   <img src="./share-timestamps-files/share-jump-button.png"/>
-   <figcaption aria-hidden="true">Opening the Jump to title dialog</figcaption>
+   <img src="./share-timestamps-files/share-input-button.png"/>
+   <figcaption aria-hidden="true">Opening the Input and rewind dialog</figcaption>
    </figure>
 
 2. **Paste the timestamp and rewind**
@@ -40,7 +40,7 @@ Share this timestamp with others so they can jump to the exact same moment.
    The stream jumps to that moment and starts playing.
 
    <figure>
-   <img src="./share-timestamps-files/share-jump-dialog.png"/>
-   <figcaption aria-hidden="true">Entering the timestamp for rewinding</figcaption>
+   <img src="./share-timestamps-files/share-input-dialog.png"/>
+   <figcaption aria-hidden="true">Inputing the timestamp for rewinding</figcaption>
    </figure>
 

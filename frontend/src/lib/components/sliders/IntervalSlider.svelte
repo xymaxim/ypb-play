@@ -175,7 +175,7 @@
         </div>
       {:else if dragging === "B"}
         <div
-          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-3"
+          class="pointer-events-none absolute top-1/2 z-40 flex h-full w-max -translate-y-1/2 items-center pl-2"
           style="left: {fill.right + thumbSize}px;"
         >
           <span

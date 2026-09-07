@@ -190,6 +190,12 @@
 
   setToastContext({ toast });
 
+  let isStageFullscreen = $state(false);
+
+  function onFullscreenChange() {
+    isStageFullscreen = document.fullscreenElement === stageEl;
+  }
+
   async function handleScreenshot(ts: number) {
     const dataUrl = player.captureScreenshot();
     if (!dataUrl || !player.streamInfo) {
@@ -210,10 +216,12 @@
   onMount(() => {
     window.addEventListener("keydown", handleKeyDown);
     videoEl?.addEventListener("interval-end", onIntervalEnd);
+    document.addEventListener("fullscreenchange", onFullscreenChange);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       videoEl?.removeEventListener("interval-end", onIntervalEnd);
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
       explorerCell.current.destroy();
       player.destroy();
     };
@@ -230,7 +238,7 @@
 <main
   class="relative mx-auto flex w-full max-w-4xl min-w-2xl flex-col gap-2 px-6 py-3"
 >
-  {#if toastMessage}
+  {#if toastMessage && !isStageFullscreen}
     <Toast message={toastMessage} icon={toastIcon} />
   {/if}
 
@@ -313,6 +321,9 @@
           !!player.rewindError}
         bind:this={stageEl}
       >
+        {#if toastMessage && isStageFullscreen}
+          <Toast message={toastMessage} icon={toastIcon} />
+        {/if}
         <video bind:this={videoEl} class="block h-full w-auto max-w-full" muted
         ></video>
         <PlayerControls
